@@ -1,0 +1,37 @@
+language: java
+
+sudo: false
+install: true
+
+jdk:
+  - oraclejdk8
+
+script: if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar ; fi
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "ZbfSCC0s59asvQdTUN8oG+xFwWDSiVqS8XTWvNzmIdl4747hmJuEta6Uv46n2AOXiWdJAT66yAtDv8G6TYtkUToSrEYrXyzE0GiUW30PpM2pDB/l5hg+TzVFcMfWOni2RVA6OS+rRovg2zz7sPjA9SCbrndVyes4DTpGXdQ9o4Pk1NZtdQHQj0C5aB63A+LRq1JBsVpTFkp4igfe2/T8Z/sXuCfUil18h07TFS04EBlrhap7VapjXqhLQgJgktq2SDBbfdO2/gflcfFHq2KiHcYmRRf5tAy/+gXIMbiPu/9qTppsuG2ZJ4zWmPTt5taTBkr0s1eh4xX5/hUHUwmv/lFx61iMtmY6Pq9jDTdfKL9snEB/GJ+L1RpO9TPIblOE45BDLej/Uscc8ag9zMKgdjG3Ry6XLeivcL8083NdkURCiGGVAMwELYhaSpL/0MftCiANHjSWD/G05OUZ/56E3bJWzS4WQBYeDaUmDHSVTgv1CjwW/MF8SeRzgJ44Ec30invmqsBfjdG29XGYUqmcnc2IzQDd0RKZAsZVs5tzNG/Rrdg2yZdKLjvqCvDTK7LLWch7AV6uDy8IxYxls777aNHRxEXwb0KhOr2sn10//vZPyZZmI8YKirp/Im9cBGvQoOPzdrnqK9HqmH1QukSiybzTjS06y0r8TJ6mDEU0Pgw="
+
+before_install:
+  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
+addons:
+  sonarcloud:
+    organization: "kosprov-github"
+    token:
+      secure: "df0vf+8eLfM3WzwvmFifsMej99xwZObCwLEFVcfnuozFAJW0R4RqrOK/4Axwg64p/72lwXiaAlvYgEA/qcPw5Kt4b1OI0ai13q5ooTBGn+QknWdvU5b8tvU3lT3FcHWoHexlGGKhpG266+EXE3DLnpheAunvnGYlweF3MFASD5LdRnpBoNGKh1kuFaW+cMNCcAMxigWPvwsULlkpZopteHyLFA1g+HExFn96ZoVQJeC/LY1BPhoD/B+OSq+CUQcWrnQ++gwXBDLs0nREvwkFoI9/sYkyb0hZWC0VXAp5On9Qme94b34uVDh7CqSiSC+hkrrktEe4baTCJce0jVaRTnbhGhxzhT62S9AuIMNfLRITXAoqU/4JaM1ADVzrrwxvjDjcKQt7bDXEtMnJpzDvoZWaDXUcwYWMn48ES+H8IlypGUx1P1oYUlFFiiCdrRUnBKuPcQx1JHAWjUEXLsMt9/jtgpbIsFRjJ7aReuMJyafssFJ4u2XQstVCyK7eLRZyQawvs2X84vjcvZ1U4MoxNzyPHxnNF0EQwXIiXqsa8vv2DUxGtIbC+aVm5gNMyzikYa9I+SG/dDhMnY4cMCwYYS3ebjDMS4orWf8rZHheKgO11aZ81UREd47seNjexEwQq17yj3IFoRScyjZxrybOGjfo0jYdYm9mHhOYorLqX+o="
+  coverity_scan:
+    project:
+      name: "kosprov/jargon2-api"
+      description: "Build submitted via Travis CI"
+    notification_email: kosprov@gmail.com
+    build_command_prepend: "mvn clean"
+    build_command: "mvn -DskipTests=true compile"
+    branch_pattern: coverity_scan
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'

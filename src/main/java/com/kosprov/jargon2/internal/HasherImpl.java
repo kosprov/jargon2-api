@@ -1,6 +1,5 @@
 package com.kosprov.jargon2.internal;
 
-import com.kosprov.jargon2.api.Jargon2;
 import com.kosprov.jargon2.api.Jargon2Exception;
 import com.kosprov.jargon2.internal.discovery.Jargon2BackendDiscovery;
 import com.kosprov.jargon2.spi.Jargon2Backend;
@@ -8,12 +7,14 @@ import com.kosprov.jargon2.spi.Jargon2Backend;
 import java.security.Provider;
 import java.util.Map;
 
-public class Hasher implements Jargon2.Hasher {
+import static com.kosprov.jargon2.api.Jargon2.*;
+
+public class HasherImpl implements Hasher {
 
     private Jargon2Backend backend = Jargon2BackendDiscovery.INSTANCE.getJargon2Backend();
     private Map<String, Object> options;
-    private Jargon2.Type type = Jargon2.Type.ARGON2i;
-    private Jargon2.Version version = Jargon2.Version.V13;
+    private Type type = Type.ARGON2i;
+    private Version version = Version.V13;
     private int timeCost = 3;
     private int memoryCost = 4096;
     private int lanes = 1;
@@ -26,12 +27,12 @@ public class Hasher implements Jargon2.Hasher {
     private byte[] secret;
     private byte[] ad;
 
-    private Jargon2.SaltGenerator saltGenerator = SecureRandomSaltGenerator.DEFAULT;
+    private SaltGenerator saltGenerator = SecureRandomSaltGenerator.DEFAULT;
 
-    public Hasher() {
+    public HasherImpl() {
     }
 
-    private Hasher(Hasher copy) {
+    private HasherImpl(HasherImpl copy) {
         this.backend = copy.backend;
         this.options = copy.options;
         this.type = copy.type;
@@ -50,14 +51,14 @@ public class Hasher implements Jargon2.Hasher {
     }
 
     @Override
-    public Hasher backend(Jargon2Backend backend) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl backend(Jargon2Backend backend) {
+        HasherImpl copy = new HasherImpl(this);
         copy.backend = backend;
         return copy;
     }
 
     @Override
-    public Hasher backend(String backendClass) {
+    public HasherImpl backend(String backendClass) {
         try {
             return backend(Class.forName(backendClass).asSubclass(Jargon2Backend.class));
         } catch (Exception e) {
@@ -66,7 +67,7 @@ public class Hasher implements Jargon2.Hasher {
     }
 
     @Override
-    public Hasher backend(Class<? extends Jargon2Backend> backendClass) {
+    public HasherImpl backend(Class<? extends Jargon2Backend> backendClass) {
         try {
             return backend(backendClass.newInstance());
         } catch (Exception e) {
@@ -75,156 +76,156 @@ public class Hasher implements Jargon2.Hasher {
     }
 
     @Override
-    public Jargon2.Hasher options(Map<String, Object> options) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl options(Map<String, Object> options) {
+        HasherImpl copy = new HasherImpl(this);
         copy.options = options;
         return copy;
     }
 
     @Override
-    public Hasher type(Jargon2.Type type) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl type(Type type) {
+        HasherImpl copy = new HasherImpl(this);
         copy.type = type;
         return copy;
     }
 
     @Override
-    public Hasher version(Jargon2.Version version) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl version(Version version) {
+        HasherImpl copy = new HasherImpl(this);
         copy.version = version;
         return copy;
     }
 
     @Override
-    public Hasher timeCost(int timeCost) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl timeCost(int timeCost) {
+        HasherImpl copy = new HasherImpl(this);
         copy.timeCost = timeCost;
         return copy;
     }
 
     @Override
-    public Hasher memoryCost(int memoryCost) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl memoryCost(int memoryCost) {
+        HasherImpl copy = new HasherImpl(this);
         copy.memoryCost = memoryCost;
         return copy;
     }
 
     @Override
-    public Jargon2.Hasher parallelism(int parallelism) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl parallelism(int parallelism) {
+        HasherImpl copy = new HasherImpl(this);
         copy.lanes = parallelism;
         copy.threads = parallelism;
         return copy;
     }
 
     @Override
-    public Hasher parallelism(int lanes, int threads) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl parallelism(int lanes, int threads) {
+        HasherImpl copy = new HasherImpl(this);
         copy.lanes = lanes;
         copy.threads = threads;
         return copy;
     }
 
     @Override
-    public Hasher hashLength(int hashLength) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl hashLength(int hashLength) {
+        HasherImpl copy = new HasherImpl(this);
         copy.hashLength = hashLength;
         return copy;
     }
 
     @Override
-    public Hasher saltLength(int saltLength) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl saltLength(int saltLength) {
+        HasherImpl copy = new HasherImpl(this);
         copy.saltLength = saltLength;
         return copy;
     }
 
     @Override
-    public Hasher salt(byte[] salt) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl salt(byte[] salt) {
+        HasherImpl copy = new HasherImpl(this);
         copy.salt = salt;
         return copy;
     }
 
     @Override
-    public Hasher salt(Jargon2.ByteArray salt) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl salt(ByteArray salt) {
+        HasherImpl copy = new HasherImpl(this);
         copy.salt = salt.getBytes();
         return copy;
     }
 
     @Override
-    public Hasher saltGenerator(Jargon2.SaltGenerator saltGenerator) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl saltGenerator(SaltGenerator saltGenerator) {
+        HasherImpl copy = new HasherImpl(this);
         copy.saltGenerator = saltGenerator;
         return copy;
     }
 
     @Override
-    public Jargon2.Hasher saltGenerator(String secureRandomAlgorithm) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl saltGenerator(String secureRandomAlgorithm) {
+        HasherImpl copy = new HasherImpl(this);
         copy.saltGenerator = new SecureRandomSaltGenerator(secureRandomAlgorithm);
         return copy;
     }
 
     @Override
-    public Jargon2.Hasher saltGenerator(String secureRandomAlgorithm, String secureRandomProvider) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl saltGenerator(String secureRandomAlgorithm, String secureRandomProvider) {
+        HasherImpl copy = new HasherImpl(this);
         copy.saltGenerator = new SecureRandomSaltGenerator(secureRandomAlgorithm, secureRandomProvider);
         return copy;
     }
 
     @Override
-    public Jargon2.Hasher saltGenerator(String secureRandomAlgorithm, Provider secureRandomProvider) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl saltGenerator(String secureRandomAlgorithm, Provider secureRandomProvider) {
+        HasherImpl copy = new HasherImpl(this);
         copy.saltGenerator = new SecureRandomSaltGenerator(secureRandomAlgorithm, secureRandomProvider);
         return copy;
     }
 
     @Override
-    public Hasher password(byte[] password) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl password(byte[] password) {
+        HasherImpl copy = new HasherImpl(this);
         copy.password = password;
         return copy;
     }
 
     @Override
-    public Hasher password(Jargon2.ByteArray password) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl password(ByteArray password) {
+        HasherImpl copy = new HasherImpl(this);
         copy.password = password.getBytes();
         return copy;
     }
 
     @Override
-    public Hasher secret(byte[] secret) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl secret(byte[] secret) {
+        HasherImpl copy = new HasherImpl(this);
         copy.secret = secret;
         return copy;
     }
 
     @Override
-    public Hasher secret(Jargon2.ByteArray secret) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl secret(ByteArray secret) {
+        HasherImpl copy = new HasherImpl(this);
         copy.secret = secret.getBytes();
         return copy;
     }
 
     @Override
-    public Hasher ad(byte[] ad) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl ad(byte[] ad) {
+        HasherImpl copy = new HasherImpl(this);
         copy.ad = ad;
         return copy;
     }
 
     @Override
-    public Hasher ad(Jargon2.ByteArray ad) {
-        Hasher copy = new Hasher(this);
+    public HasherImpl ad(ByteArray ad) {
+        HasherImpl copy = new HasherImpl(this);
         copy.ad = ad.getBytes();
         return copy;
     }
 
     @Override
-    public byte[] rawHash() throws Jargon2Exception {
+    public byte[] rawHash() {
         if (salt == null) {
             throw new Jargon2Exception("Missing salt for raw hashing");
         }
@@ -232,7 +233,7 @@ public class Hasher implements Jargon2.Hasher {
     }
 
     @Override
-    public String encodedHash() throws Jargon2Exception {
+    public String encodedHash() {
         if (salt == null) {
             salt = new byte[saltLength];
             saltGenerator.generate(salt);

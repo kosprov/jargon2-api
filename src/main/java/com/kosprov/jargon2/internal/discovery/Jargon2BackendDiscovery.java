@@ -3,7 +3,6 @@ package com.kosprov.jargon2.internal.discovery;
 import com.kosprov.jargon2.spi.Jargon2Backend;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -55,8 +54,8 @@ public enum Jargon2BackendDiscovery {
                     }
 
                     ServiceLoader<Jargon2Backend> loader = ServiceLoader.load(Jargon2Backend.class);
-                    for (Jargon2Backend backend : loader) {
-                        backendsFound.add(backend);
+                    for (Jargon2Backend loadedBackend : loader) {
+                        backendsFound.add(loadedBackend);
                     }
 
                     if (backendsFound.size() == 1) {
@@ -64,8 +63,8 @@ public enum Jargon2BackendDiscovery {
                     } else if (backendsFound.size() > 1) {
                         StringBuilder sb = new StringBuilder();
                         sb.append('[');
-                        for (Jargon2Backend backend : backendsFound) {
-                            sb.append(backend.getClass().getName()).append(", ");
+                        for (Jargon2Backend b : backendsFound) {
+                            sb.append(b.getClass().getName()).append(", ");
                         }
                         sb.setLength(sb.length() - 2);
                         sb.append(']');

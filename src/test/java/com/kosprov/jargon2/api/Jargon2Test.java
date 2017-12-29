@@ -189,6 +189,21 @@ public class Jargon2Test {
         }
     }
 
+    @Test(expected = Jargon2Exception.class)
+    public void erroneousSaltGeneratorTest() {
+        jargon2Hasher().saltGenerator("WRONG");
+    }
+
+    @Test(expected = Jargon2Exception.class)
+    public void erroneousSaltGeneratorTest2() {
+        jargon2Hasher().saltGenerator("WRONG", "WRONG");
+    }
+
+    @Test(expected = Jargon2Exception.class)
+    public void erroneousSaltGeneratorTest3() {
+        jargon2Hasher().saltGenerator("WRONG", DummyProvider.getInstance());
+    }
+
     @Test
     public void allParamsPassedForRawHashing() throws Exception {
 
@@ -248,7 +263,8 @@ public class Jargon2Test {
                 .version(version)
                 .memoryCost(memoryCost)
                 .timeCost(timeCost)
-                .parallelism(lanes, threads)
+                .parallelism(lanes)
+                .parallelism(lanes, threads) // this should override threads to 1
                 .hash(hash)
                 .secret(secret)
                 .ad(ad)
@@ -272,6 +288,14 @@ public class Jargon2Test {
         assertTrue(matches);
     }
 
+    @Test(expected = Jargon2Exception.class)
+    public void noSaltForRawHashingTest() throws Exception {
+        byte[] password = "this is a password".getBytes("UTF-8");
+
+        jargon2Hasher()
+            .password(password)
+            .rawHash();
+    }
 
     @Test
     public void lowLevelApiEncodedTest() throws Exception {
@@ -419,6 +443,64 @@ public class Jargon2Test {
         );
 
         assertTrue(matches);
+    }
+
+    @Test(expected = Jargon2Exception.class)
+    public void invalidBackendClassNameOnLowLevelApiTest() {
+        jargon2LowLevelApi("invalid.class.Name");
+    }
+
+    @Test(expected = Jargon2Exception.class)
+    public void nonConstructableBackendClassNameOnLowLevelApiTest() {
+        jargon2LowLevelApi(NonConstructableJargon2Backend.class.getName());
+    }
+
+    @Test(expected = Jargon2Exception.class)
+    public void nonConstructableBackendClassOnLowLevelApiTest() {
+        jargon2LowLevelApi(NonConstructableJargon2Backend.class);
+    }
+
+    @Test(expected = Jargon2Exception.class)
+    public void invalidBackendClassNameOnHasherTest() {
+        jargon2Hasher().backend("invalid.class.Name");
+    }
+
+    @Test(expected = Jargon2Exception.class)
+    public void nonConstructableBackendClassNameOnHasherTest() {
+        jargon2Hasher().backend(NonConstructableJargon2Backend.class.getName());
+    }
+
+    @Test(expected = Jargon2Exception.class)
+    public void nonConstructableBackendClassOnHasherTest() {
+        jargon2Hasher().backend(NonConstructableJargon2Backend.class);
+    }
+
+    @Test(expected = Jargon2Exception.class)
+    public void invalidBackendClassNameOnVerifierTest() {
+        jargon2Verifier().backend("invalid.class.Name");
+    }
+
+    @Test(expected = Jargon2Exception.class)
+    public void nonConstructableBackendClassNameOnVerifierTest() {
+        jargon2Verifier().backend(NonConstructableJargon2Backend.class.getName());
+    }
+
+    @Test(expected = Jargon2Exception.class)
+    public void nonConstructableBackendClassOnVerifierTest() {
+        jargon2Verifier().backend(NonConstructableJargon2Backend.class);
+    }
+
+    @Test
+    public void validBackendsTest() {
+        jargon2LowLevelApi(DummyJargon2Backend.class.getName());
+        jargon2LowLevelApi(DummyJargon2Backend.class);
+        jargon2LowLevelApi(new DummyJargon2Backend());
+        jargon2Hasher().backend(DummyJargon2Backend.class.getName());
+        jargon2Hasher().backend(DummyJargon2Backend.class);
+        jargon2Hasher().backend(new DummyJargon2Backend());
+        jargon2Verifier().backend(DummyJargon2Backend.class.getName());
+        jargon2Verifier().backend(DummyJargon2Backend.class);
+        jargon2Verifier().backend(new DummyJargon2Backend());
     }
 
     @Test

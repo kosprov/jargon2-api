@@ -56,7 +56,7 @@ public interface Jargon2Backend {
      *
      * @see LowLevelApi#rawHash(Type, Version, int, int, int, int, int, byte[], byte[], byte[], byte[], Map)
      */
-    byte[] rawHash(Type type, Version version, int memoryCost, int timeCost, int lanes, int threads, int hashLength, byte[] secret, byte[] ad, byte[] salt, byte[] password, Map<String, Object> options) throws Jargon2Exception;
+    byte[] rawHash(Type type, Version version, int memoryCost, int timeCost, int lanes, int threads, int hashLength, byte[] secret, byte[] ad, byte[] salt, byte[] password, Map<String, Object> options);
 
     /**
      * <p><b>Implementor's guides</b></p>
@@ -86,7 +86,7 @@ public interface Jargon2Backend {
      *
      * @see LowLevelApi#encodedHash(Type, Version, int, int, int, int, int, byte[], byte[], byte[], byte[], Map)
      */
-    String encodedHash(Type type, Version version, int memoryCost, int timeCost, int lanes, int threads, int hashLength, byte[] secret, byte[] ad, byte[] salt, byte[] password, Map<String, Object> options) throws Jargon2Exception;
+    String encodedHash(Type type, Version version, int memoryCost, int timeCost, int lanes, int threads, int hashLength, byte[] secret, byte[] ad, byte[] salt, byte[] password, Map<String, Object> options);
 
     /**
      * <p><b>Implementor's guides</b></p>
@@ -116,7 +116,7 @@ public interface Jargon2Backend {
      *
      * @see LowLevelApi#verifyRaw(Type, Version, int, int, int, int, byte[], byte[], byte[], byte[], byte[], Map)
      */
-    boolean verifyRaw(Type type, Version version, int memoryCost, int timeCost, int lanes, int threads, byte[] rawHash, byte[] secret, byte[] ad, byte[] salt, byte[] password, Map<String, Object> options) throws Jargon2Exception;
+    boolean verifyRaw(Type type, Version version, int memoryCost, int timeCost, int lanes, int threads, byte[] rawHash, byte[] secret, byte[] ad, byte[] salt, byte[] password, Map<String, Object> options);
 
     /**
      * <p><b>Implementor's guides</b></p>
@@ -137,5 +137,5 @@ public interface Jargon2Backend {
      *
      * @see LowLevelApi#verifyEncoded(String, int, byte[], byte[], byte[], Map)
      */
-    boolean verifyEncoded(String encodedHash, int threads, byte[] secret, byte[] ad, byte[] password, Map<String, Object> options) throws Jargon2Exception;
+    boolean verifyEncoded(String encodedHash, int threads, byte[] secret, byte[] ad, byte[] password, Map<String, Object> options);
 }

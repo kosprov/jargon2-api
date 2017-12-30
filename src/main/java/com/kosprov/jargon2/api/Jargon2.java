@@ -1,6 +1,9 @@
 package com.kosprov.jargon2.api;
 
+import com.kosprov.jargon2.internal.ByteArrayImpl;
+import com.kosprov.jargon2.internal.HasherImpl;
 import com.kosprov.jargon2.internal.Jargon2BackendAdapter;
+import com.kosprov.jargon2.internal.VerifierImpl;
 import com.kosprov.jargon2.internal.discovery.Jargon2BackendDiscovery;
 import com.kosprov.jargon2.spi.Jargon2Backend;
 
@@ -139,7 +142,7 @@ public class Jargon2 {
                 // Data
                 byte[] salt,
                 byte[] password
-        ) throws Jargon2Exception;
+        );
 
         /**
          * Calculate a raw hash for the given parameters.
@@ -184,7 +187,7 @@ public class Jargon2 {
                 byte[] salt,
                 byte[] password,
                 Map<String, Object> options
-        ) throws Jargon2Exception;
+        );
 
         /**
          * Calculate an encoded hash for the given parameters.
@@ -216,7 +219,7 @@ public class Jargon2 {
                 // Data
                 byte[] salt,
                 byte[] password
-        ) throws Jargon2Exception;
+        );
 
         /**
          * Calculate an encoded hash for the given parameters.
@@ -270,7 +273,7 @@ public class Jargon2 {
                 byte[] salt,
                 byte[] password,
                 Map<String, Object> options
-        ) throws Jargon2Exception;
+        );
 
         /**
          * Verify a raw hash value for the given parameters.
@@ -302,7 +305,7 @@ public class Jargon2 {
                 byte[] rawHash,
                 byte[] salt,
                 byte[] password
-        ) throws Jargon2Exception;
+        );
 
         /**
          * Verify a raw hash value for the given parameters
@@ -347,7 +350,7 @@ public class Jargon2 {
                 byte[] salt,
                 byte[] password,
                 Map<String, Object> options
-        ) throws Jargon2Exception;
+        );
 
         /**
          * Verify an encoded hash value for the given parameters.
@@ -364,7 +367,7 @@ public class Jargon2 {
                 String encodedHash,
                 // Data
                 byte[] password
-        ) throws Jargon2Exception;
+        );
 
         /**
          * Verify an encoded hash value for the given parameters.
@@ -387,7 +390,7 @@ public class Jargon2 {
                 byte[] ad,
                 byte[] password,
                 Map<String, Object> options
-        ) throws Jargon2Exception;
+        );
 
         /**
          * Verify an encoded hash value for the given parameters.
@@ -412,7 +415,7 @@ public class Jargon2 {
                 int threads,
                 // Data
                 byte[] password
-        ) throws Jargon2Exception;
+        );
 
         /**
          * Verify an encoded hash value for the given parameters.
@@ -443,7 +446,7 @@ public class Jargon2 {
                 byte[] ad,
                 byte[] password,
                 Map<String, Object> options
-        ) throws Jargon2Exception;
+        );
     }
 
     /**
@@ -463,7 +466,7 @@ public class Jargon2 {
      * @return A builder to configure and use an Argon2 hashing backend
      */
     public static Hasher jargon2Hasher() {
-        return new com.kosprov.jargon2.internal.Hasher();
+        return new HasherImpl();
     }
 
     /**
@@ -472,7 +475,7 @@ public class Jargon2 {
      * @return A builder to configure and use an Argon2 verification backend
      */
     public static Verifier jargon2Verifier() {
-        return new com.kosprov.jargon2.internal.Verifier();
+        return new VerifierImpl();
     }
 
     /**
@@ -529,7 +532,7 @@ public class Jargon2 {
      * @return A new {@link CharSeqByteArray} instance.
      */
     public static CharSeqByteArray toByteArray(String value) {
-        return new com.kosprov.jargon2.internal.ByteArray.CharSeqByteArray(value, DEFAULT_ENCODING);
+        return new ByteArrayImpl.CharSeqByteArrayImpl(value, DEFAULT_ENCODING);
     }
 
     /**
@@ -545,7 +548,7 @@ public class Jargon2 {
      * @return A new {@link ClearableSourceCharSeqByteArray} instance.
      */
     public static ClearableSourceCharSeqByteArray toByteArray(char[] value) {
-        return new com.kosprov.jargon2.internal.ByteArray.ClearableSourceCharSeqByteArray(value, DEFAULT_ENCODING);
+        return new ByteArrayImpl.ClearableSourceCharSeqByteArrayImpl(value, DEFAULT_ENCODING);
     }
 
     /**
@@ -561,7 +564,7 @@ public class Jargon2 {
      * @return A new {@link ClearableSourceByteArray} instance.
      */
     public static ClearableSourceByteArray toByteArray(byte[] bytes) {
-        return new com.kosprov.jargon2.internal.ByteArray.ClearableSourceByteArray(bytes);
+        return new ByteArrayImpl.ClearableSourceByteArrayImpl(bytes);
     }
 
     /**
@@ -571,7 +574,7 @@ public class Jargon2 {
      * @return A new {@link ByteArray} instance.
      */
     public static ByteArray toByteArray(InputStream is) {
-        return new com.kosprov.jargon2.internal.ByteArray(is, STREAM_BUFFER_SIZE);
+        return new ByteArrayImpl(is, STREAM_BUFFER_SIZE);
     }
 
     /**
@@ -582,7 +585,7 @@ public class Jargon2 {
      * @return A new {@link ByteArray} instance.
      */
     public static ByteArray toByteArray(InputStream is, int bufferSize) {
-        return new com.kosprov.jargon2.internal.ByteArray(is, bufferSize);
+        return new ByteArrayImpl(is, bufferSize);
     }
 
     /**
@@ -592,7 +595,7 @@ public class Jargon2 {
      * @return A new {@link CharSeqByteArray} instance.
      */
     public static CharSeqByteArray toByteArray(Reader reader) {
-        return new com.kosprov.jargon2.internal.ByteArray.CharSeqByteArray(reader, STREAM_BUFFER_SIZE, DEFAULT_ENCODING);
+        return new ByteArrayImpl.CharSeqByteArrayImpl(reader, STREAM_BUFFER_SIZE, DEFAULT_ENCODING);
     }
 
     /**
@@ -603,7 +606,7 @@ public class Jargon2 {
      * @return A new {@link CharSeqByteArray} instance.
      */
     public static CharSeqByteArray toByteArray(Reader reader, int bufferSize) {
-        return new com.kosprov.jargon2.internal.ByteArray.CharSeqByteArray(reader, bufferSize, DEFAULT_ENCODING);
+        return new ByteArrayImpl.CharSeqByteArrayImpl(reader, bufferSize, DEFAULT_ENCODING);
     }
 
     /**
@@ -1018,7 +1021,7 @@ public class Jargon2 {
          * @return The raw hash
          * @throws Jargon2Exception If required parameters are missing, are invalid or hash calculation fails unexpectedly
          */
-        byte[] rawHash() throws Jargon2Exception;
+        byte[] rawHash();
 
         /**
          * Calculate the encoded hash.
@@ -1036,7 +1039,7 @@ public class Jargon2 {
          * @return The encoded hash
          * @throws Jargon2Exception If required parameters are missing, are invalid or hash calculation fails unexpectedly
          */
-        String encodedHash() throws Jargon2Exception;
+        String encodedHash();
     }
 
     /**
@@ -1336,7 +1339,7 @@ public class Jargon2 {
          * @return true if recalculating the hash matches
          * @throws Jargon2Exception If required parameters are missing, are invalid or verification fails unexpectedly
          */
-        boolean verifyEncoded() throws Jargon2Exception;
+        boolean verifyEncoded();
     }
 
     /**
@@ -1413,6 +1416,6 @@ public class Jargon2 {
          * @return true if recalculating the hash matches
          * @throws Jargon2Exception If required parameters are missing, are invalid or verification fails unexpectedly
          */
-        boolean verifyRaw() throws Jargon2Exception;
+        boolean verifyRaw();
     }
 }

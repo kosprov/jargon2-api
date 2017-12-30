@@ -6,7 +6,7 @@
 
     <groupId>com.kosprov.jargon2</groupId>
     <artifactId>jargon2-api</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>Jargon2 API</name>

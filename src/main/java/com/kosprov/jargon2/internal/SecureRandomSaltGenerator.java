@@ -10,7 +10,9 @@ import java.security.SecureRandom;
 
 class SecureRandomSaltGenerator implements Jargon2.SaltGenerator {
 
-    static Jargon2.SaltGenerator DEFAULT = new SecureRandomSaltGenerator();
+    private static final String INSTANTIATION_FAILURE = "Failed to instantiate internal salt generator";
+
+    static final Jargon2.SaltGenerator DEFAULT = new SecureRandomSaltGenerator();
 
     final SecureRandom random;
 
@@ -44,7 +46,7 @@ class SecureRandomSaltGenerator implements Jargon2.SaltGenerator {
         try {
             random = SecureRandom.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e) {
-            throw new Jargon2Exception("Failed to instantiate internal salt generator", e);
+            throw new Jargon2Exception(INSTANTIATION_FAILURE, e);
         }
         return random;
     }
@@ -54,7 +56,7 @@ class SecureRandomSaltGenerator implements Jargon2.SaltGenerator {
         try {
             random = SecureRandom.getInstance(algorithm, provider);
         } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new Jargon2Exception("Failed to instantiate internal salt generator", e);
+            throw new Jargon2Exception(INSTANTIATION_FAILURE, e);
         }
         return random;
     }
@@ -64,7 +66,7 @@ class SecureRandomSaltGenerator implements Jargon2.SaltGenerator {
         try {
             random = SecureRandom.getInstance(algorithm, provider);
         } catch (NoSuchAlgorithmException e) {
-            throw new Jargon2Exception("Failed to instantiate internal salt generator", e);
+            throw new Jargon2Exception(INSTANTIATION_FAILURE, e);
         }
         return random;
     }

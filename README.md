@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/kosprov/jargon2-api.svg?branch=master)](https://travis-ci.org/kosprov/jargon2-api)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/14707/badge.svg)](https://scan.coverity.com/projects/kosprov-jargon2-api)
-[![Maven metadata URI](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/com/kosprov/jargon2/jargon2-api/maven-metadata.xml.svg)](https://search.maven.org/#artifactdetails%7Ccom.kosprov.jargon2%7Cjargon2-api%7C1.0.0%7Cjar)
+[![Maven metadata URI](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/com/kosprov/jargon2/jargon2-api/maven-metadata.xml.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.kosprov.jargon2%22%20AND%20a%3A%22jargon2-api%22)
 [![Quality Gate](https://sonarcloud.io/api/badges/gate?key=com.kosprov.jargon2:jargon2-api)](https://sonarcloud.io/dashboard/index/com.kosprov.jargon2:jargon2-api)
 
 Welcome to the Jargon2 repository.
@@ -46,12 +46,12 @@ If you're using Maven, add the following dependencies to your pom:
 <dependency>
     <groupId>com.kosprov.jargon2</groupId>
     <artifactId>jargon2-api</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 <dependency>
     <groupId>com.kosprov.jargon2</groupId>
     <artifactId>jargon2-native-ri-backend</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <scope>runtime</scope>
 </dependency>
 ```

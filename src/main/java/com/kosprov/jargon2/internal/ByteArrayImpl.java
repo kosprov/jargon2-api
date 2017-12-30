@@ -15,16 +15,16 @@ import java.util.Arrays;
 import static com.kosprov.jargon2.api.Jargon2.DEFAULT_NORMALIZED_FORM;
 import static com.kosprov.jargon2.api.Jargon2.Normalization;
 
-public class ByteArray implements Jargon2.ByteArray {
+public class ByteArrayImpl implements Jargon2.ByteArray {
 
     private boolean cleared = false;
     Data data;
 
-    private ByteArray(Data data) {
+    private ByteArrayImpl(Data data) {
         this.data = data;
     }
 
-    public ByteArray(InputStream value, int bufferSize) {
+    public ByteArrayImpl(InputStream value, int bufferSize) {
         this(new InputStreamConsumer(value, bufferSize));
     }
 
@@ -56,7 +56,7 @@ public class ByteArray implements Jargon2.ByteArray {
     private volatile FinalizationTrigger finalizationTrigger;
 
     @Override
-    public ByteArray finalizable() {
+    public ByteArrayImpl finalizable() {
         // Instantiate the finalization trigger only once for this object
         if (finalizationTrigger == null) {
             synchronized (this) {
@@ -203,7 +203,7 @@ public class ByteArray implements Jargon2.ByteArray {
         }
     }
 
-    static abstract class Consumer<T, E extends ExtendedData<E>> implements Data {
+    abstract static class Consumer<T, E extends ExtendedData<E>> implements Data {
         T stream;
         int bufferSize;
         byte[] bytes;
@@ -307,65 +307,65 @@ public class ByteArray implements Jargon2.ByteArray {
         }
     }
 
-    public static class CharSeqByteArray extends ByteArray implements Jargon2.CharSeqByteArray {
+    public static class CharSeqByteArrayImpl extends ByteArrayImpl implements Jargon2.CharSeqByteArray {
 
-        public CharSeqByteArray(char[] value, Charset encoding) {
+        public CharSeqByteArrayImpl(char[] value, Charset encoding) {
             super(new CharArrayData(value, encoding, null));
         }
 
-        public CharSeqByteArray(String value, Charset encoding) {
+        public CharSeqByteArrayImpl(String value, Charset encoding) {
             this(value.toCharArray(), encoding);
         }
 
-        public CharSeqByteArray(Reader value, int bufferSize, Charset encoding) {
+        public CharSeqByteArrayImpl(Reader value, int bufferSize, Charset encoding) {
             super(new ReaderConsumer(value, bufferSize, encoding, null));
         }
 
         @Override
-        public CharSeqByteArray encoding(String encoding) {
+        public CharSeqByteArrayImpl encoding(String encoding) {
             return encoding(Charset.forName(encoding));
         }
 
         @Override
-        public CharSeqByteArray encoding(Charset encoding) {
+        public CharSeqByteArrayImpl encoding(Charset encoding) {
             this.data = ((CharSeqData) data).withEncoding(encoding);
             return this;
         }
 
         @Override
-        public CharSeqByteArray normalize() {
+        public CharSeqByteArrayImpl normalize() {
             return normalize(DEFAULT_NORMALIZED_FORM);
         }
 
         @Override
-        public CharSeqByteArray normalize(Normalization normalization) {
+        public CharSeqByteArrayImpl normalize(Normalization normalization) {
             this.data = ((CharSeqData) data).withNormalization(normalization);
             return this;
         }
 
         @Override
-        public CharSeqByteArray finalizable() {
-            return (CharSeqByteArray) super.finalizable();
+        public CharSeqByteArrayImpl finalizable() {
+            return (CharSeqByteArrayImpl) super.finalizable();
         }
     }
 
-    public static class ClearableSourceByteArray extends ByteArray implements Jargon2.ClearableSourceByteArray {
+    public static class ClearableSourceByteArrayImpl extends ByteArrayImpl implements Jargon2.ClearableSourceByteArray {
 
         boolean clearSource;
         byte[] bytes;
 
-        public ClearableSourceByteArray(byte[] value) {
+        public ClearableSourceByteArrayImpl(byte[] value) {
             super(new ByteArrayData(Arrays.copyOf(value, value.length)));
             this.bytes = value;
         }
 
         @Override
-        public ClearableSourceByteArray clearSource() {
+        public ClearableSourceByteArrayImpl clearSource() {
             return clearSource(true);
         }
 
         @Override
-        public ClearableSourceByteArray clearSource(boolean clear) {
+        public ClearableSourceByteArrayImpl clearSource(boolean clear) {
             this.clearSource = clear;
             return this;
         }
@@ -379,27 +379,27 @@ public class ByteArray implements Jargon2.ByteArray {
         }
 
         @Override
-        public ClearableSourceByteArray finalizable() {
-            return (ClearableSourceByteArray) super.finalizable();
+        public ClearableSourceByteArrayImpl finalizable() {
+            return (ClearableSourceByteArrayImpl) super.finalizable();
         }
     }
 
-    public static class ClearableSourceCharSeqByteArray extends CharSeqByteArray implements Jargon2.ClearableSourceCharSeqByteArray {
+    public static class ClearableSourceCharSeqByteArrayImpl extends CharSeqByteArrayImpl implements Jargon2.ClearableSourceCharSeqByteArray {
         boolean clearSource;
         char[] chars;
 
-        public ClearableSourceCharSeqByteArray(char[] value, Charset encoding) {
+        public ClearableSourceCharSeqByteArrayImpl(char[] value, Charset encoding) {
             super(Arrays.copyOf(value, value.length), encoding);
             this.chars = value;
         }
 
         @Override
-        public ClearableSourceCharSeqByteArray clearSource() {
+        public ClearableSourceCharSeqByteArrayImpl clearSource() {
             return clearSource(true);
         }
 
         @Override
-        public ClearableSourceCharSeqByteArray clearSource(boolean clear) {
+        public ClearableSourceCharSeqByteArrayImpl clearSource(boolean clear) {
             this.clearSource = clear;
             return this;
         }
@@ -413,28 +413,28 @@ public class ByteArray implements Jargon2.ByteArray {
         }
 
         @Override
-        public ClearableSourceCharSeqByteArray encoding(String encoding) {
-            return (ClearableSourceCharSeqByteArray) super.encoding(encoding);
+        public ClearableSourceCharSeqByteArrayImpl encoding(String encoding) {
+            return (ClearableSourceCharSeqByteArrayImpl) super.encoding(encoding);
         }
 
         @Override
-        public ClearableSourceCharSeqByteArray encoding(Charset encoding) {
-            return (ClearableSourceCharSeqByteArray) super.encoding(encoding);
+        public ClearableSourceCharSeqByteArrayImpl encoding(Charset encoding) {
+            return (ClearableSourceCharSeqByteArrayImpl) super.encoding(encoding);
         }
 
         @Override
-        public ClearableSourceCharSeqByteArray normalize() {
-            return (ClearableSourceCharSeqByteArray) super.normalize();
+        public ClearableSourceCharSeqByteArrayImpl normalize() {
+            return (ClearableSourceCharSeqByteArrayImpl) super.normalize();
         }
 
         @Override
-        public ClearableSourceCharSeqByteArray normalize(Normalization normalization) {
-            return (ClearableSourceCharSeqByteArray) super.normalize(normalization);
+        public ClearableSourceCharSeqByteArrayImpl normalize(Normalization normalization) {
+            return (ClearableSourceCharSeqByteArrayImpl) super.normalize(normalization);
         }
 
         @Override
-        public ClearableSourceCharSeqByteArray finalizable() {
-            return (ClearableSourceCharSeqByteArray) super.finalizable();
+        public ClearableSourceCharSeqByteArrayImpl finalizable() {
+            return (ClearableSourceCharSeqByteArrayImpl) super.finalizable();
         }
     }
 }

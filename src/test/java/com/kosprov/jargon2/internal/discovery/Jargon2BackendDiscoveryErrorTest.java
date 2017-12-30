@@ -19,6 +19,16 @@ public class Jargon2BackendDiscoveryErrorTest {
         }
     }
 
+    @Test(expected = Jargon2BackendDiscoveryException.class)
+    public void errorOnInvalidBackendTest() {
+        System.setProperty("com.kosprov.jargon2.spi.backend", "invalid.backend.class.Name");
+        try {
+            Jargon2BackendDiscovery.INSTANCE.getJargon2Backend();
+        } finally {
+            System.setProperty("com.kosprov.jargon2.spi.backend", "");
+        }
+    }
+
     public static class AnotherJargon2Backend implements Jargon2Backend {
         @Override
         public byte[] rawHash(Jargon2.Type type, Jargon2.Version version, int memoryCost, int timeCost, int lanes, int threads, int hashLength, byte[] secret, byte[] ad, byte[] salt, byte[] password, Map<String, Object> options) throws Jargon2Exception {

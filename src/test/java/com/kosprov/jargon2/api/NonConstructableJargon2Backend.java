@@ -2,8 +2,6 @@ package com.kosprov.jargon2.api;
 
 import com.kosprov.jargon2.spi.Jargon2Backend;
 
-import javax.xml.bind.DatatypeConverter;
-import java.util.Arrays;
 import java.util.Map;
 
 public class NonConstructableJargon2Backend implements Jargon2Backend {

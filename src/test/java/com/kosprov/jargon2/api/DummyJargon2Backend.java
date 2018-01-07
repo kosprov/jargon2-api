@@ -1,8 +1,8 @@
 package com.kosprov.jargon2.api;
 
 import com.kosprov.jargon2.spi.Jargon2Backend;
+import org.apache.commons.codec.binary.Base64;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -43,11 +43,11 @@ public class DummyJargon2Backend implements Jargon2Backend {
     }
 
     private String encode(byte[] data) {
-        return DatatypeConverter.printBase64Binary(data);
+        return Base64.encodeBase64String(data);
     }
 
     private byte[] decode(String encoded) {
-        return DatatypeConverter.parseBase64Binary(encoded);
+        return Base64.decodeBase64(encoded);
     }
 
     private byte[] doDummyHash(int length, byte[]... data) {

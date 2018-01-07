@@ -51,7 +51,7 @@ If you're using Maven, add the following dependencies to your pom:
 <dependency>
     <groupId>com.kosprov.jargon2</groupId>
     <artifactId>jargon2-native-ri-backend</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <scope>runtime</scope>
 </dependency>
 ```

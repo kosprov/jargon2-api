@@ -10,6 +10,7 @@ import com.kosprov.jargon2.spi.Jargon2Backend;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class Jargon2 {
     /**
      * The default character encoding for converting char sequences to byte arrays
      */
-    public static final Charset DEFAULT_ENCODING = Charset.forName("UTF-8");
+    public static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 
     /**
      * The default buffer size for consuming bytes from streams or readers during byte arrays conversion

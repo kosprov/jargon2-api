@@ -95,7 +95,7 @@ public class ByteArrayImpl implements Jargon2.ByteArray {
             return output;
         } catch (CharacterCodingException e) {
             Arrays.fill(bytes, (byte) 0x00);
-            throw new Jargon2Exception("Failed to encode value to UTF-8");
+            throw new Jargon2Exception("Failed to encode value to " + encoding.displayName());
         }
     }
 

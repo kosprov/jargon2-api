@@ -1,14 +1,14 @@
 package com.kosprov.jargon2.internal;
 
 import com.kosprov.jargon2.api.Jargon2;
-import static com.kosprov.jargon2.api.Jargon2.ByteArray;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.CharArrayReader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import static com.kosprov.jargon2.api.Jargon2.ByteArray;
 import static org.junit.Assert.*;
 
 public class ByteArrayImplTest {
@@ -18,10 +18,10 @@ public class ByteArrayImplTest {
 
         char[] chars = "0123456789".toCharArray();
 
-        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(chars, Charset.forName("UTF-8"));
+        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(chars, StandardCharsets.UTF_8);
         byte[] bytes = byteArray.getBytes();
 
-        assertTrue(Arrays.equals(new String(chars).getBytes("UTF-8"), bytes));
+        assertTrue(Arrays.equals(new String(chars).getBytes(StandardCharsets.UTF_8), bytes));
     }
 
     @Test
@@ -29,10 +29,10 @@ public class ByteArrayImplTest {
 
         char[] chars = "Φούμπαρ".toCharArray();
 
-        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(chars, Charset.forName("UTF-8"));
+        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(chars, StandardCharsets.UTF_8);
         byte[] bytes = byteArray.getBytes();
 
-        assertTrue(Arrays.equals(new String(chars).getBytes("UTF-8"), bytes));
+        assertTrue(Arrays.equals(new String(chars).getBytes(StandardCharsets.UTF_8), bytes));
     }
 
     @Test
@@ -40,10 +40,10 @@ public class ByteArrayImplTest {
 
         char[] chars = "Φούμπαρ".toCharArray();
 
-        ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(chars, Charset.forName("UTF-8"));
+        ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(chars, StandardCharsets.UTF_8);
         byte[] bytes1 = byteArray1.getBytes();
 
-        ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(chars, Charset.forName("UTF-8")).encoding("ISO8859_7");
+        ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(chars, StandardCharsets.UTF_8).encoding("ISO8859_7");
         byte[] bytes2 = byteArray2.getBytes();
 
         assertFalse(Arrays.equals(bytes1, bytes2));
@@ -55,10 +55,10 @@ public class ByteArrayImplTest {
 
         String str = "0123456789";
 
-        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(str, Charset.forName("UTF-8"));
+        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(str, StandardCharsets.UTF_8);
         byte[] bytes = byteArray.getBytes();
 
-        assertTrue(Arrays.equals(str.getBytes("UTF-8"), bytes));
+        assertTrue(Arrays.equals(str.getBytes(StandardCharsets.UTF_8), bytes));
     }
 
     @Test
@@ -66,10 +66,10 @@ public class ByteArrayImplTest {
 
         String str = "Φούμπαρ";
 
-        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(str, Charset.forName("UTF-8"));
+        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(str, StandardCharsets.UTF_8);
         byte[] bytes = byteArray.getBytes();
 
-        assertTrue(Arrays.equals(str.getBytes("UTF-8"), bytes));
+        assertTrue(Arrays.equals(str.getBytes(StandardCharsets.UTF_8), bytes));
     }
 
     @Test
@@ -77,10 +77,10 @@ public class ByteArrayImplTest {
 
         String str = "Φούμπαρ";
 
-        ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(str, Charset.forName("UTF-8"));
+        ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(str, StandardCharsets.UTF_8);
         byte[] bytes1 = byteArray1.getBytes();
 
-        ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(str, Charset.forName("UTF-8")).encoding("ISO8859_7");
+        ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(str, StandardCharsets.UTF_8).encoding("ISO8859_7");
         byte[] bytes2 = byteArray2.getBytes();
 
         assertFalse(Arrays.equals(bytes1, bytes2));
@@ -168,30 +168,30 @@ public class ByteArrayImplTest {
     public void toByteArrayFromReaderTest() throws Exception {
         char[] chars = "value".toCharArray();
 
-        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars), 64, Charset.forName("UTF-8"));
+        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars), 64, StandardCharsets.UTF_8);
         byte[] bytes = byteArray.getBytes();
 
-        assertTrue(Arrays.equals(new String(chars).getBytes("UTF-8"), bytes));
+        assertTrue(Arrays.equals(new String(chars).getBytes(StandardCharsets.UTF_8), bytes));
     }
 
     @Test
     public void toByteArrayFromReaderNonAsciiTest() throws Exception {
         char[] chars = "Φούμπαρ".toCharArray();
 
-        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars), 64, Charset.forName("UTF-8"));
+        ByteArray byteArray = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars), 64, StandardCharsets.UTF_8);
         byte[] bytes = byteArray.getBytes();
 
-        assertTrue(Arrays.equals(new String(chars).getBytes("UTF-8"), bytes));
+        assertTrue(Arrays.equals(new String(chars).getBytes(StandardCharsets.UTF_8), bytes));
     }
 
     @Test
     public void toByteArrayFromReaderNonAsciiNonDefaultEncodingTest() throws Exception {
         char[] chars = "Φούμπαρ".toCharArray();
 
-        ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars), 64, Charset.forName("UTF-8"));
+        ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars), 64, StandardCharsets.UTF_8);
         byte[] bytes1 = byteArray1.getBytes();
 
-        ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars), 64, Charset.forName("UTF-8")).encoding("ISO8859_7");
+        ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars), 64, StandardCharsets.UTF_8).encoding("ISO8859_7");
         byte[] bytes2 = byteArray2.getBytes();
 
         assertFalse(Arrays.equals(bytes1, bytes2));
@@ -204,20 +204,20 @@ public class ByteArrayImplTest {
         char[] chars2 = "\u0041\u0301".toCharArray();
 
         {
-            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(chars1, Charset.forName("UTF-8"));
+            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(chars1, StandardCharsets.UTF_8);
             byte[] bytes1 = byteArray1.getBytes();
 
-            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(chars2, Charset.forName("UTF-8"));
+            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(chars2, StandardCharsets.UTF_8);
             byte[] bytes2 = byteArray2.getBytes();
 
             assertFalse(Arrays.equals(bytes1, bytes2));
         }
 
         {
-            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(chars1, Charset.forName("UTF-8")).normalize();
+            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(chars1, StandardCharsets.UTF_8).normalize();
             byte[] bytes1 = byteArray1.getBytes();
 
-            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(chars2, Charset.forName("UTF-8")).normalize();
+            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(chars2, StandardCharsets.UTF_8).normalize();
             byte[] bytes2 = byteArray2.getBytes();
 
             assertTrue(Arrays.equals(bytes1, bytes2));
@@ -230,20 +230,20 @@ public class ByteArrayImplTest {
         String str2 = "\u0041\u0301";
 
         {
-            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(str1, Charset.forName("UTF-8"));
+            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(str1, StandardCharsets.UTF_8);
             byte[] bytes1 = byteArray1.getBytes();
 
-            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(str2, Charset.forName("UTF-8"));
+            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(str2, StandardCharsets.UTF_8);
             byte[] bytes2 = byteArray2.getBytes();
 
             assertFalse(Arrays.equals(bytes1, bytes2));
         }
 
         {
-            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(str1, Charset.forName("UTF-8")).normalize();
+            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(str1, StandardCharsets.UTF_8).normalize();
             byte[] bytes1 = byteArray1.getBytes();
 
-            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(str2, Charset.forName("UTF-8")).normalize();
+            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(str2, StandardCharsets.UTF_8).normalize();
             byte[] bytes2 = byteArray2.getBytes();
 
             assertTrue(Arrays.equals(bytes1, bytes2));
@@ -256,20 +256,20 @@ public class ByteArrayImplTest {
         char[] chars2 = "\u0041\u0301".toCharArray();
 
         {
-            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars1), 64, Charset.forName("UTF-8"));
+            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars1), 64, StandardCharsets.UTF_8);
             byte[] bytes1 = byteArray1.getBytes();
 
-            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars2), 64, Charset.forName("UTF-8"));
+            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars2), 64, StandardCharsets.UTF_8);
             byte[] bytes2 = byteArray2.getBytes();
 
             assertFalse(Arrays.equals(bytes1, bytes2));
         }
 
         {
-            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars1), 64, Charset.forName("UTF-8")).normalize();
+            ByteArray byteArray1 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars1), 64, StandardCharsets.UTF_8).normalize();
             byte[] bytes1 = byteArray1.getBytes();
 
-            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars2), 64, Charset.forName("UTF-8")).normalize();
+            ByteArray byteArray2 = new ByteArrayImpl.CharSeqByteArrayImpl(new CharArrayReader(chars2), 64, StandardCharsets.UTF_8).normalize();
             byte[] bytes2 = byteArray2.getBytes();
 
             assertTrue(Arrays.equals(bytes1, bytes2));
@@ -393,7 +393,7 @@ public class ByteArrayImplTest {
             byte b = (byte) c;
             char[] chars = new char[] { c };
             // non-finalizable: copyBytes and chars stays as-is after GC
-            byte[] copyBytes = new ByteArrayImpl.ClearableSourceCharSeqByteArrayImpl(chars, Charset.forName("UTF-8")).clearSource().getBytes();
+            byte[] copyBytes = new ByteArrayImpl.ClearableSourceCharSeqByteArrayImpl(chars, StandardCharsets.UTF_8).clearSource().getBytes();
             assertEquals(c, chars[0]);
             assertEquals(b, copyBytes[0]);
             System.gc();
@@ -407,7 +407,7 @@ public class ByteArrayImplTest {
             byte b = (byte) c;
             char[] chars = new char[] { c };
             // finalizable: copyBytes and chars are wiped out after GC
-            byte[] copyBytes = new ByteArrayImpl.ClearableSourceCharSeqByteArrayImpl(chars, Charset.forName("UTF-8")).clearSource().finalizable().getBytes();
+            byte[] copyBytes = new ByteArrayImpl.ClearableSourceCharSeqByteArrayImpl(chars, StandardCharsets.UTF_8).clearSource().finalizable().getBytes();
             assertEquals(c, chars[0]);
             assertEquals(b, copyBytes[0]);
             System.gc();

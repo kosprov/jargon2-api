@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.CharArrayReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,9 +80,9 @@ public class Jargon2Test {
         int saltLength = 8;
         int hashLength = 8;
 
-        byte[] password = "this is a password".getBytes("UTF-8");
-        byte[] secret = "secret key".getBytes("UTF-8");
-        byte[] ad = "some additional data".getBytes("UTF-8");
+        byte[] password = "this is a password".getBytes(StandardCharsets.UTF_8);
+        byte[] secret = "secret key".getBytes(StandardCharsets.UTF_8);
+        byte[] ad = "some additional data".getBytes(StandardCharsets.UTF_8);
 
         Map<String, Object> options = new HashMap<>();
 
@@ -145,7 +146,7 @@ public class Jargon2Test {
         int saltLength = 8;
         int hashLength = 8;
 
-        byte[] password = "this is a password".getBytes("UTF-8");
+        byte[] password = "this is a password".getBytes(StandardCharsets.UTF_8);
 
         CapturingDummyJargon2Backend backend = new CapturingDummyJargon2Backend();
 
@@ -215,10 +216,10 @@ public class Jargon2Test {
         int threads = 2;
         int hashLength = 8;
 
-        byte[] password = "this is a password".getBytes("UTF-8");
-        byte[] salt = "some salt".getBytes("UTF-8");
-        byte[] secret = "secret key".getBytes("UTF-8");
-        byte[] ad = "some additional data".getBytes("UTF-8");
+        byte[] password = "this is a password".getBytes(StandardCharsets.UTF_8);
+        byte[] salt = "some salt".getBytes(StandardCharsets.UTF_8);
+        byte[] secret = "secret key".getBytes(StandardCharsets.UTF_8);
+        byte[] ad = "some additional data".getBytes(StandardCharsets.UTF_8);
 
         Map<String, Object> options = new HashMap<>();
 
@@ -290,7 +291,7 @@ public class Jargon2Test {
 
     @Test(expected = Jargon2Exception.class)
     public void noSaltForRawHashingTest() throws Exception {
-        byte[] password = "this is a password".getBytes("UTF-8");
+        byte[] password = "this is a password".getBytes(StandardCharsets.UTF_8);
 
         jargon2Hasher()
             .password(password)
@@ -300,10 +301,10 @@ public class Jargon2Test {
     @Test
     public void lowLevelApiEncodedTest() throws Exception {
         String password = "this is a password";
-        byte[] passwordBytes = password.getBytes("UTF-8");
+        byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
 
         String salt = "some salt";
-        byte[] saltBytes = salt.getBytes("UTF-8");
+        byte[] saltBytes = salt.getBytes(StandardCharsets.UTF_8);
 
         String encoded = jargon2LowLevelApi(DummyJargon2Backend.class.getName()).encodedHash(
                 Type.ARGON2id,
@@ -327,16 +328,16 @@ public class Jargon2Test {
     @Test
     public void lowLevelApiEncodedAllParamsTest() throws Exception {
         String secret = "this is a secret";
-        byte[] secretBytes = secret.getBytes("UTF-8");
+        byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
 
         String ad = "this is additional data";
-        byte[] adBytes = ad.getBytes("UTF-8");
+        byte[] adBytes = ad.getBytes(StandardCharsets.UTF_8);
 
         String password = "this is a password";
-        byte[] passwordBytes = password.getBytes("UTF-8");
+        byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
 
         String salt = "some salt";
-        byte[] saltBytes = salt.getBytes("UTF-8");
+        byte[] saltBytes = salt.getBytes(StandardCharsets.UTF_8);
 
         String encoded = jargon2LowLevelApi(DummyJargon2Backend.class.getName()).encodedHash(
                 Type.ARGON2id,
@@ -368,10 +369,10 @@ public class Jargon2Test {
     @Test
     public void lowLevelApiRawTest() throws Exception {
         String password = "this is a password";
-        byte[] passwordBytes = password.getBytes("UTF-8");
+        byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
 
         String salt = "some salt";
-        byte[] saltBytes = salt.getBytes("UTF-8");
+        byte[] saltBytes = salt.getBytes(StandardCharsets.UTF_8);
 
         byte[] rawHash = jargon2LowLevelApi(DummyJargon2Backend.class.getName()).rawHash(
                 Type.ARGON2id,
@@ -401,16 +402,16 @@ public class Jargon2Test {
     @Test
     public void lowLevelApiRawAllParamsTest() throws Exception {
         String secret = "this is a secret";
-        byte[] secretBytes = secret.getBytes("UTF-8");
+        byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
 
         String ad = "this is additional data";
-        byte[] adBytes = ad.getBytes("UTF-8");
+        byte[] adBytes = ad.getBytes(StandardCharsets.UTF_8);
 
         String password = "this is a password";
-        byte[] passwordBytes = password.getBytes("UTF-8");
+        byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
 
         String salt = "some salt";
-        byte[] saltBytes = salt.getBytes("UTF-8");
+        byte[] saltBytes = salt.getBytes(StandardCharsets.UTF_8);
 
         byte[] rawHash = jargon2LowLevelApi(DummyJargon2Backend.class.getName()).rawHash(
                 Type.ARGON2id,
@@ -505,7 +506,7 @@ public class Jargon2Test {
 
     @Test
     public void byteArraysTest() throws Exception {
-        byte[] secret = "superSecret".getBytes("UTF-8");
+        byte[] secret = "superSecret".getBytes(StandardCharsets.UTF_8);
 
         try (ByteArray secretByteArray = toByteArray(secret).clearSource()) {
             Hasher hasher = jargon2Hasher()

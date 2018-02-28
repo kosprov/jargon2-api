@@ -70,6 +70,7 @@
         <maven-gpg-plugin-version>1.6</maven-gpg-plugin-version>
         <nexus-staging-maven-plugin-version>1.6.8</nexus-staging-maven-plugin-version>
         <dependency-check-maven-version>3.0.2</dependency-check-maven-version>
+        <pgpverify-maven-plugin-version>1.2.0</pgpverify-maven-plugin-version>
 
         <!-- dependencies versions -->
         <junit-version>4.12</junit-version>
@@ -152,6 +153,20 @@
                 <executions>
                     <execution>
                         <phase>install</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.simplify4u.plugins</groupId>
+                <artifactId>pgpverify-maven-plugin</artifactId>
+                <version>${pgpverify-maven-plugin-version}</version>
+                <executions>
+                    <execution>
+                        <id>verify-dependency-signatures</id>
+                        <phase>validate</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>

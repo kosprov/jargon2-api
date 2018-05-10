@@ -6,6 +6,7 @@
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.kosprov.jargon2%3Ajargon2-api&metric=alert_status)](https://sonarcloud.io/dashboard/index/com.kosprov.jargon2:jargon2-api)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=com.kosprov.jargon2%3Ajargon2-api&metric=security_rating)](https://sonarcloud.io/dashboard/index/com.kosprov.jargon2:jargon2-api)
 [![Dependency Status](https://www.versioneye.com/user/projects/5af3e33c0fb24f0e5d5149c5/badge.svg)](https://www.versioneye.com/user/projects/5af3e33c0fb24f0e5d5149c5)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](/LICENSE)
 
 Welcome to the Jargon2 repository.
 

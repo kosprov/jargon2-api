@@ -69,6 +69,7 @@
         <maven-javadoc-plugin-version>2.10.4</maven-javadoc-plugin-version>
         <maven-gpg-plugin-version>1.6</maven-gpg-plugin-version>
         <nexus-staging-maven-plugin-version>1.6.8</nexus-staging-maven-plugin-version>
+        <dependency-check-maven-version>3.0.2</dependency-check-maven-version>
 
         <!-- dependencies versions -->
         <junit-version>4.12</junit-version>
@@ -136,6 +137,23 @@
                     <execution>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${dependency-check-maven-version}</version>
+                <configuration>
+                    <!--<failBuildOnCVSS>4</failBuildOnCVSS>-->
+                    <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>

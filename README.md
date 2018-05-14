@@ -48,7 +48,7 @@ If you're using Maven, add the following dependencies to your pom:
 <dependency>
     <groupId>com.kosprov.jargon2</groupId>
     <artifactId>jargon2-api</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
 </dependency>
 <dependency>
     <groupId>com.kosprov.jargon2</groupId>

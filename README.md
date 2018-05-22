@@ -5,7 +5,6 @@
 [![Maven metadata URI](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/com/kosprov/jargon2/jargon2-api/maven-metadata.xml.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.kosprov.jargon2%22%20AND%20a%3A%22jargon2-api%22)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.kosprov.jargon2%3Ajargon2-api&metric=alert_status)](https://sonarcloud.io/dashboard/index/com.kosprov.jargon2:jargon2-api)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=com.kosprov.jargon2%3Ajargon2-api&metric=security_rating)](https://sonarcloud.io/dashboard/index/com.kosprov.jargon2:jargon2-api)
-[![Dependency Status](https://www.versioneye.com/user/projects/5af3e33c0fb24f0e5d5149c5/badge.svg)](https://www.versioneye.com/user/projects/5af3e33c0fb24f0e5d5149c5)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](/LICENSE)
 
 Welcome to the Jargon2 repository.

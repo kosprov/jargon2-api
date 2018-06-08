@@ -66,10 +66,10 @@
         <!-- plugin versions -->
         <maven-surefire-plugin-version>2.21.0</maven-surefire-plugin-version>
         <maven-source-plugin-version>3.0.1</maven-source-plugin-version>
-        <maven-javadoc-plugin-version>3.0.0</maven-javadoc-plugin-version>
+        <maven-javadoc-plugin-version>3.0.1</maven-javadoc-plugin-version>
         <maven-gpg-plugin-version>1.6</maven-gpg-plugin-version>
         <nexus-staging-maven-plugin-version>1.6.8</nexus-staging-maven-plugin-version>
-        <dependency-check-maven-version>3.1.2</dependency-check-maven-version>
+        <dependency-check-maven-version>3.2.1</dependency-check-maven-version>
         <pgpverify-maven-plugin-version>1.2.0</pgpverify-maven-plugin-version>
 
         <!-- dependencies versions -->

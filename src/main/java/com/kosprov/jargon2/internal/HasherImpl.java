@@ -5,7 +5,9 @@ import com.kosprov.jargon2.internal.discovery.Jargon2BackendDiscovery;
 import com.kosprov.jargon2.spi.Jargon2Backend;
 
 import java.security.Provider;
+import java.text.MessageFormat;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static com.kosprov.jargon2.api.Jargon2.*;
 
@@ -239,6 +241,64 @@ public class HasherImpl implements Hasher {
             saltGenerator.generate(salt);
         }
         return new Jargon2BackendAdapter(backend).encodedHash(type, version, memoryCost, timeCost, lanes, threads, hashLength, secret, ad, salt, password, options);
+    }
+
+    @Override
+    public boolean propertiesMatch(String encodedHash) {
+        Pattern pattern = encodedHashPattern();
+        return pattern.matcher(encodedHash).matches();
+    }
+
+    private Pattern encodedHashPattern;
+
+    private Pattern encodedHashPattern() {
+        if (encodedHashPattern == null) {
+            synchronized (this) {
+                if (encodedHashPattern == null) {
+                    switch (version) {
+                        case V10:
+                            encodedHashPattern =
+                                    Pattern.compile(
+                                            MessageFormat.format(
+                                                    "^\\${0}\\$m={1},t={2},p={3}\\$[A-Za-z0-9+/]'{'{4}'}'\\$[A-Za-z0-9+/]'{'{5}'}'$",
+                                                    type.getValue(),
+                                                    Integer.toString(memoryCost),
+                                                    Integer.toString(timeCost),
+                                                    Integer.toString(lanes),
+                                                    Integer.toString(base64Length(saltLength)),
+                                                    Integer.toString(base64Length(hashLength))
+                                            )
+                                    );
+                            break;
+                        case V13:
+                        default:
+                            encodedHashPattern =
+                                    Pattern.compile(
+                                            MessageFormat.format(
+                                                    "^\\${0}\\$v={1}\\$m={2},t={3},p={4}\\$[A-Za-z0-9+/]'{'{5}'}'\\$[A-Za-z0-9+/]'{'{6}'}'$",
+                                                    type.getValue(),
+                                                    Integer.toString(version.getValue()),
+                                                    Integer.toString(memoryCost),
+                                                    Integer.toString(timeCost),
+                                                    Integer.toString(lanes),
+                                                    Integer.toString(base64Length(saltLength)),
+                                                    Integer.toString(base64Length(hashLength))
+                                            )
+                                    );
+                    }
+                }
+            }
+        }
+        return encodedHashPattern;
+    }
+
+    private static int base64Length(int bytes) {
+        int base64Length = bytes / 3 * 4;
+        int mod3 = bytes % 3;
+        if (mod3 != 0) {
+            base64Length += (mod3 + 1);
+        }
+        return base64Length;
     }
 
     @Override

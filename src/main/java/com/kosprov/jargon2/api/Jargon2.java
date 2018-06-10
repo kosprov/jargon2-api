@@ -13,6 +13,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.Provider;
 import java.security.SecureRandom;
+import java.text.MessageFormat;
 import java.util.Map;
 
 /**
@@ -1041,6 +1042,15 @@ public class Jargon2 {
          * @throws Jargon2Exception If required parameters are missing, are invalid or hash calculation fails unexpectedly
          */
         String encodedHash();
+
+        /**
+         * Tests whether this hasher configuration matches with properties found encoded in the given hash.
+         *
+         * @param encodedHash An Argon2 encoded hash
+         * @return <code>true</code>, if this hasher properties and encodedHash properties match (type, version, memory
+         * cost, time cost, parallelism, salt length and hash length)
+         */
+        boolean propertiesMatch(String encodedHash);
     }
 
     /**

@@ -43,11 +43,11 @@ public class DummyJargon2Backend implements Jargon2Backend {
     }
 
     private String encode(byte[] data) {
-        return Base64.encodeBase64String(data);
+        return Base64.encodeBase64URLSafeString(data).replaceAll("-", "+").replaceAll("_", "/");
     }
 
     private byte[] decode(String encoded) {
-        return Base64.decodeBase64(encoded);
+        return Base64.decodeBase64(encoded.replaceAll("\\+", "-").replaceAll("/", "_"));
     }
 
     private byte[] doDummyHash(int length, byte[]... data) {

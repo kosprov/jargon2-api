@@ -660,4 +660,91 @@ public class Jargon2Test {
             }
         }
     }
+
+    @Test
+    public void propertiesMatchTest() {
+
+        byte[] secret = "superSecret".getBytes(StandardCharsets.UTF_8);
+
+        Hasher hasher = jargon2Hasher()
+                .type(Type.ARGON2id)
+                .memoryCost(8)
+                .timeCost(1)
+                .parallelism(1)
+                .saltLength(8)
+                .hashLength(16);
+
+        String encodedHash = hasher.password(secret).encodedHash();
+
+        // encoded hash produced by this hasher must match
+        assertTrue(hasher.propertiesMatch(encodedHash));
+
+        // encoded hash produced by this hasher must match again
+        assertTrue(hasher.propertiesMatch(encodedHash));
+
+        encodedHash = "$argon2id$v=19$m=8,t=1,p=1$AAAAAAAAAAA$BBBBBBBBBBBBBBBBBBBBBB";
+
+        // build a new hasher by changing a single property
+        // encoded hash must not match with the new hasher
+        {
+            Hasher otherHasher = hasher.type(Type.ARGON2i);
+            assertFalse(otherHasher.propertiesMatch(encodedHash));
+            assertTrue(otherHasher.propertiesMatch(encodedHash.replace("argon2id", "argon2i")));
+        }
+
+        {
+            Hasher otherHasher = hasher.version(Version.V10);
+            assertFalse(otherHasher.propertiesMatch(encodedHash));
+            assertTrue(otherHasher.propertiesMatch(encodedHash.replace("$v=19", "")));
+        }
+
+        {
+            Hasher otherHasher = hasher.memoryCost(16);
+            assertFalse(otherHasher.propertiesMatch(encodedHash));
+            assertTrue(otherHasher.propertiesMatch(encodedHash.replace("m=8", "m=16")));
+        }
+
+        {
+            Hasher otherHasher = hasher.timeCost(10);
+            assertFalse(otherHasher.propertiesMatch(encodedHash));
+            assertTrue(otherHasher.propertiesMatch(encodedHash.replace("t=1", "t=10")));
+        }
+
+        {
+            Hasher otherHasher = hasher.parallelism(4);
+            assertFalse(otherHasher.propertiesMatch(encodedHash));
+            assertTrue(otherHasher.propertiesMatch(encodedHash.replace("p=1", "p=4")));
+        }
+
+        {
+            Hasher otherHasher = hasher.parallelism(4, 1);
+            assertFalse(otherHasher.propertiesMatch(encodedHash));
+            assertTrue(otherHasher.propertiesMatch(encodedHash.replace("p=1", "p=4")));
+        }
+
+        {
+            Hasher otherHasher = hasher.saltLength(16);
+            assertFalse(otherHasher.propertiesMatch(encodedHash));
+            assertTrue(otherHasher.propertiesMatch(encodedHash.replace("$AAAAAAAAAAA", "$AAAAAAAAAAAAAAAAAAAAAA")));
+        }
+
+        {
+            Hasher otherHasher = hasher.hashLength(32);
+            assertFalse(otherHasher.propertiesMatch(encodedHash));
+            assertTrue(otherHasher.propertiesMatch(encodedHash.replace("$BBBBBBBBBBBBBBBBBBBBBB", "$BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")));
+        }
+
+        // encoded hash produced by the original hasher must still match
+        assertTrue(hasher.propertiesMatch(encodedHash));
+
+        // original hasher does not match with changed encoded hashes
+        assertFalse(hasher.propertiesMatch(encodedHash.replace("argon2id", "argon2i")));
+        assertFalse(hasher.propertiesMatch(encodedHash.replace("$v=19", "")));
+        assertFalse(hasher.propertiesMatch(encodedHash.replace("m=8", "m=16")));
+        assertFalse(hasher.propertiesMatch(encodedHash.replace("t=1", "t=10")));
+        assertFalse(hasher.propertiesMatch(encodedHash.replace("p=1", "p=4")));
+        assertFalse(hasher.propertiesMatch(encodedHash.replace("p=1", "p=4")));
+        assertFalse(hasher.propertiesMatch(encodedHash.replace("$AAAAAAAAAAA", "$AAAAAAAAAAAAAAAAAAAAAA")));
+        assertFalse(hasher.propertiesMatch(encodedHash.replace("$BBBBBBBBBBBBBBBBBBBBBB", "$BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")));
+    }
 }

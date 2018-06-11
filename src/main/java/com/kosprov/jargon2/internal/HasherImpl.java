@@ -253,40 +253,36 @@ public class HasherImpl implements Hasher {
 
     private Pattern encodedHashPattern() {
         if (encodedHashPattern == null) {
-            synchronized (this) {
-                if (encodedHashPattern == null) {
-                    switch (version) {
-                        case V10:
-                            encodedHashPattern =
-                                    Pattern.compile(
-                                            MessageFormat.format(
-                                                    "^\\${0}\\$m={1},t={2},p={3}\\$[A-Za-z0-9+/]'{'{4}'}'\\$[A-Za-z0-9+/]'{'{5}'}'$",
-                                                    type.getValue(),
-                                                    Integer.toString(memoryCost),
-                                                    Integer.toString(timeCost),
-                                                    Integer.toString(lanes),
-                                                    Integer.toString(base64Length(saltLength)),
-                                                    Integer.toString(base64Length(hashLength))
-                                            )
-                                    );
-                            break;
-                        case V13:
-                        default:
-                            encodedHashPattern =
-                                    Pattern.compile(
-                                            MessageFormat.format(
-                                                    "^\\${0}\\$v={1}\\$m={2},t={3},p={4}\\$[A-Za-z0-9+/]'{'{5}'}'\\$[A-Za-z0-9+/]'{'{6}'}'$",
-                                                    type.getValue(),
-                                                    Integer.toString(version.getValue()),
-                                                    Integer.toString(memoryCost),
-                                                    Integer.toString(timeCost),
-                                                    Integer.toString(lanes),
-                                                    Integer.toString(base64Length(saltLength)),
-                                                    Integer.toString(base64Length(hashLength))
-                                            )
-                                    );
-                    }
-                }
+            switch (version) {
+                case V10:
+                    encodedHashPattern =
+                            Pattern.compile(
+                                    MessageFormat.format(
+                                            "^\\${0}\\$m={1},t={2},p={3}\\$[A-Za-z0-9+/]'{'{4}'}'\\$[A-Za-z0-9+/]'{'{5}'}'$",
+                                            type.getValue(),
+                                            Integer.toString(memoryCost),
+                                            Integer.toString(timeCost),
+                                            Integer.toString(lanes),
+                                            Integer.toString(base64Length(saltLength)),
+                                            Integer.toString(base64Length(hashLength))
+                                    )
+                            );
+                    break;
+                case V13:
+                default:
+                    encodedHashPattern =
+                            Pattern.compile(
+                                    MessageFormat.format(
+                                            "^\\${0}\\$v={1}\\$m={2},t={3},p={4}\\$[A-Za-z0-9+/]'{'{5}'}'\\$[A-Za-z0-9+/]'{'{6}'}'$",
+                                            type.getValue(),
+                                            Integer.toString(version.getValue()),
+                                            Integer.toString(memoryCost),
+                                            Integer.toString(timeCost),
+                                            Integer.toString(lanes),
+                                            Integer.toString(base64Length(saltLength)),
+                                            Integer.toString(base64Length(hashLength))
+                                    )
+                            );
             }
         }
         return encodedHashPattern;

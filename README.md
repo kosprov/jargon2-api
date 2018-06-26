@@ -48,7 +48,7 @@ If you're using Maven, add the following dependencies to your pom:
 <dependency>
     <groupId>com.kosprov.jargon2</groupId>
     <artifactId>jargon2-api</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 <dependency>
     <groupId>com.kosprov.jargon2</groupId>
@@ -60,10 +60,7 @@ If you're using Maven, add the following dependencies to your pom:
 
 You may need to change the version numbers to the most recent release. The second dependency is the [default Jargon2 backend implementation](https://github.com/kosprov/jargon2-backends "Jargon2 Backends repository") that wraps the [Argon2 reference implementation](https://github.com/P-H-C/phc-winner-argon2 "Argon2 reference implementation repository") written in C. It includes x86 binaries compiled for Windows, Linux and macOS, so it should work on most systems. Backend implementations can automatically be discovered using a `java.util.ServiceLoader` so there is no build-time dependency to the backend classes. More on this on the [backends](#backends) section.
 
-> **Tip**:  To enjoy the Jargon2 API fluency, always start with this static import:
-```java
-import static com.kosprov.jargon2.api.Jargon2.*;
-``` 
+Keep in mind that `jargon2-api` and `jargon2-native-ri-backend` follow different release cycles and their version number would not necessarily be the same.
 
 ### Simple example
 
@@ -100,6 +97,12 @@ public class Jargon2Example {
     }
 }
 ```
+
+> **Tip**:  To enjoy the Jargon2 API fluency, always start with this static import:
+```java
+import static com.kosprov.jargon2.api.Jargon2.*;
+``` 
+
 `Hasher` and `Verifier` are immutable (copy-on-write), thread-safe objects. Each method call returns a new copy. You usually cascade method calls to build an instance with the static configuration (type, memory cost, time cost etc) and use that prototype instance to pass all values (password, salt, ad etc) needed to calculate a specific hash. The prototype object does not change and can be reused to calculate more hashes. Since it is immutable, it can be safely accessed by multiple threads.
 
 To understand this point further, lets see a simple component that exposes a `hash`/`verify` API to clients:

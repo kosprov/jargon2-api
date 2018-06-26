@@ -12,6 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.kosprov.jargon2.api.Jargon2.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.collection.IsMapWithSize.anEmptyMap;
+import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.*;
 
 public class Jargon2Test {
@@ -39,7 +44,7 @@ public class Jargon2Test {
 
                 assertNotNull(hash);
 
-                assertTrue(Arrays.equals(reference, password));
+                assertThat(reference, is(equalTo(password)));
             }
 
             for (char c : password) {
@@ -60,7 +65,7 @@ public class Jargon2Test {
 
                 assertTrue(matches);
 
-                assertTrue(Arrays.equals(reference, password));
+                assertThat(reference, is(equalTo(password)));
             }
 
             for (char c : password) {
@@ -70,7 +75,7 @@ public class Jargon2Test {
     }
 
     @Test
-    public void allParamsPassedForEncodedHashing() throws Exception {
+    public void allParamsPassedForEncodedHashing() {
         Type type = Type.ARGON2id;
         Version version = Version.V10;
         int memoryCost = 2048;
@@ -85,6 +90,9 @@ public class Jargon2Test {
         byte[] ad = "some additional data".getBytes(StandardCharsets.UTF_8);
 
         Map<String, Object> options = new HashMap<>();
+        options.put("key1", 1);
+        options.put("key2", 2);
+        options.put("key3", 3);
 
         CapturingDummyJargon2Backend backend = new CapturingDummyJargon2Backend();
 
@@ -114,10 +122,10 @@ public class Jargon2Test {
         assertSame(ad, backend.captured.ad);
         assertSame(saltLength, backend.captured.salt.length);
         assertSame(password, backend.captured.password);
-        assertSame(options, backend.captured.options);
+        assertEquals(options, backend.captured.options);
 
         assertNotNull(hash);
-        assertTrue(hash.startsWith("$argon2id$m=" + memoryCost + ",t=" + timeCost + ",p=" + lanes + "$"));
+        assertThat(hash, startsWith("$argon2id$m=" + memoryCost + ",t=" + timeCost + ",p=" + lanes + "$"));
 
         threads = 1;
 
@@ -136,13 +144,99 @@ public class Jargon2Test {
         assertSame(secret, backend.captured.secret);
         assertSame(ad, backend.captured.ad);
         assertSame(password, backend.captured.password);
-        assertSame(options, backend.captured.options);
+        assertEquals(options, backend.captured.options);
 
         assertTrue(matches);
     }
 
     @Test
-    public void customSaltGeneratorTest() throws Exception {
+    public void noOptionsGiveEmptyOptionsToBackend() {
+        CapturingDummyJargon2Backend backend = new CapturingDummyJargon2Backend();
+
+        byte[] password = "this is a password".getBytes(StandardCharsets.UTF_8);
+
+        {
+            String hash = jargon2Hasher()
+                    .backend(backend)
+                    .password(password)
+                    .encodedHash();
+
+            assertNotNull(backend.captured.options);
+            assertThat(backend.captured.options, is(anEmptyMap()));
+
+            boolean matches = jargon2Verifier()
+                    .backend(backend)
+                    .password(password)
+                    .hash(hash)
+                    .verifyEncoded();
+
+            assertNotNull(backend.captured.options);
+            assertThat(backend.captured.options, is(anEmptyMap()));
+
+            assertTrue(matches);
+        }
+
+        {
+            String hash = jargon2Hasher()
+                    .backend(backend)
+                    .options(null)
+                    .password(password)
+                    .encodedHash();
+
+            assertNotNull(backend.captured.options);
+            assertThat(backend.captured.options, is(anEmptyMap()));
+
+            boolean matches = jargon2Verifier()
+                    .backend(backend)
+                    .options(null)
+                    .password(password)
+                    .hash(hash)
+                    .verifyEncoded();
+
+            assertNotNull(backend.captured.options);
+            assertThat(backend.captured.options, is(anEmptyMap()));
+
+            assertTrue(matches);
+        }
+    }
+
+    @Test
+    public void optionsAreCopiedToBackend() {
+        CapturingDummyJargon2Backend backend = new CapturingDummyJargon2Backend();
+
+        byte[] password = "this is a password".getBytes(StandardCharsets.UTF_8);
+
+        Map<String, Object> options = new HashMap<>();
+        options.put("key1", 1);
+        options.put("key2", 2);
+        options.put("key3", 3);
+
+        String hash = jargon2Hasher()
+                .backend(backend)
+                .options(options)
+                .password(password)
+                .encodedHash();
+
+        assertNotNull(backend.captured.options);
+        assertEquals(options, backend.captured.options);
+        assertNotSame(options, backend.captured.options);
+
+        boolean matches = jargon2Verifier()
+                .backend(backend)
+                .options(options)
+                .password(password)
+                .hash(hash)
+                .verifyEncoded();
+
+        assertNotNull(backend.captured.options);
+        assertEquals(options, backend.captured.options);
+        assertNotSame(options, backend.captured.options);
+
+        assertTrue(matches);
+    }
+
+    @Test
+    public void customSaltGeneratorTest() {
         int saltLength = 8;
         int hashLength = 8;
 
@@ -206,7 +300,7 @@ public class Jargon2Test {
     }
 
     @Test
-    public void allParamsPassedForRawHashing() throws Exception {
+    public void allParamsPassedForRawHashing() {
 
         Type type = Type.ARGON2id;
         Version version = Version.V10;
@@ -222,6 +316,9 @@ public class Jargon2Test {
         byte[] ad = "some additional data".getBytes(StandardCharsets.UTF_8);
 
         Map<String, Object> options = new HashMap<>();
+        options.put("key1", 1);
+        options.put("key2", 2);
+        options.put("key3", 3);
 
         CapturingDummyJargon2Backend backend = new CapturingDummyJargon2Backend();
 
@@ -251,7 +348,7 @@ public class Jargon2Test {
         assertSame(ad, backend.captured.ad);
         assertSame(salt, backend.captured.salt);
         assertSame(password, backend.captured.password);
-        assertSame(options, backend.captured.options);
+        assertEquals(options, backend.captured.options);
 
         assertNotNull(hash);
 
@@ -284,13 +381,13 @@ public class Jargon2Test {
         assertSame(ad, backend.captured.ad);
         assertSame(salt, backend.captured.salt);
         assertSame(password, backend.captured.password);
-        assertSame(options, backend.captured.options);
+        assertEquals(options, backend.captured.options);
 
         assertTrue(matches);
     }
 
     @Test(expected = Jargon2Exception.class)
-    public void noSaltForRawHashingTest() throws Exception {
+    public void noSaltForRawHashingTest() {
         byte[] password = "this is a password".getBytes(StandardCharsets.UTF_8);
 
         jargon2Hasher()
@@ -299,7 +396,7 @@ public class Jargon2Test {
     }
 
     @Test
-    public void lowLevelApiEncodedTest() throws Exception {
+    public void lowLevelApiEncodedTest() {
         String password = "this is a password";
         byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
 
@@ -326,7 +423,7 @@ public class Jargon2Test {
     }
 
     @Test
-    public void lowLevelApiEncodedAllParamsTest() throws Exception {
+    public void lowLevelApiEncodedAllParamsTest() {
         String secret = "this is a secret";
         byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
 
@@ -367,7 +464,7 @@ public class Jargon2Test {
     }
 
     @Test
-    public void lowLevelApiRawTest() throws Exception {
+    public void lowLevelApiRawTest() {
         String password = "this is a password";
         byte[] passwordBytes = password.getBytes(StandardCharsets.UTF_8);
 
@@ -400,7 +497,7 @@ public class Jargon2Test {
     }
 
     @Test
-    public void lowLevelApiRawAllParamsTest() throws Exception {
+    public void lowLevelApiRawAllParamsTest() {
         String secret = "this is a secret";
         byte[] secretBytes = secret.getBytes(StandardCharsets.UTF_8);
 
@@ -546,7 +643,7 @@ public class Jargon2Test {
         }
 
         byte[] zeros = new byte[secret.length];
-        assertTrue(Arrays.equals(zeros, secret));
+        assertThat(zeros, is(equalTo(secret)));
     }
 
     @Test
@@ -560,8 +657,8 @@ public class Jargon2Test {
             ByteArray byteArray2 = byteArray1.encoding("ISO8859_7");
             byte[] bytes2 = byteArray2.getBytes();
 
-            assertFalse(Arrays.equals(bytes1, bytes2));
-            assertTrue(Arrays.equals(str.getBytes("ISO8859_7"), bytes2));
+            assertThat(bytes1, not(equalTo(bytes2)));
+            assertThat(str.getBytes("ISO8859_7"), is(equalTo(bytes2)));
         }
 
         {
@@ -572,8 +669,8 @@ public class Jargon2Test {
             ByteArray byteArray2 = byteArray1.encoding("ISO8859_7");
             byte[] bytes2 = byteArray2.getBytes();
 
-            assertFalse(Arrays.equals(bytes1, bytes2));
-            assertTrue(Arrays.equals(new String(chars).getBytes("ISO8859_7"), bytes2));
+            assertThat(bytes1, not(equalTo(bytes2)));
+            assertThat(new String(chars).getBytes("ISO8859_7"), is(equalTo(bytes2)));
         }
 
         {
@@ -585,8 +682,8 @@ public class Jargon2Test {
             ByteArray byteArray2 = toByteArray(new CharArrayReader(chars)).encoding("ISO8859_7");
             byte[] bytes2 = byteArray2.getBytes();
 
-            assertFalse(Arrays.equals(bytes1, bytes2));
-            assertTrue(Arrays.equals(new String(chars).getBytes("ISO8859_7"), bytes2));
+            assertThat(bytes1, not(equalTo(bytes2)));
+            assertThat(new String(chars).getBytes("ISO8859_7"), is(equalTo(bytes2)));
         }
     }
 

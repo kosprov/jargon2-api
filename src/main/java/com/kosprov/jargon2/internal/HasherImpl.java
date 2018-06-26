@@ -6,6 +6,8 @@ import com.kosprov.jargon2.spi.Jargon2Backend;
 
 import java.security.Provider;
 import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -14,7 +16,7 @@ import static com.kosprov.jargon2.api.Jargon2.*;
 public class HasherImpl implements Hasher {
 
     private Jargon2Backend backend = Jargon2BackendDiscovery.INSTANCE.getJargon2Backend();
-    private Map<String, Object> options;
+    private Map<String, Object> options = Collections.emptyMap();
     private Type type = Type.ARGON2i;
     private Version version = Version.V13;
     private int timeCost = 3;
@@ -80,7 +82,7 @@ public class HasherImpl implements Hasher {
     @Override
     public HasherImpl options(Map<String, Object> options) {
         HasherImpl copy = new HasherImpl(this);
-        copy.options = options;
+        copy.options = options != null ? new HashMap<>(options) : Collections.<String, Object>emptyMap();
         return copy;
     }
 
@@ -302,7 +304,7 @@ public class HasherImpl implements Hasher {
         // Careful not to leak any sensitive data
         return "Hasher{" +
                 "backend=" + backend.getClass().getName() +
-                ", options=" + (options != null ? options.size() : "none") +
+                ", options=" + options.size() + " item(s)" +
                 ", type=" + type +
                 ", version=" + version +
                 ", timeCost=" + timeCost +

@@ -4,13 +4,15 @@ import com.kosprov.jargon2.api.Jargon2Exception;
 import com.kosprov.jargon2.internal.discovery.Jargon2BackendDiscovery;
 import com.kosprov.jargon2.spi.Jargon2Backend;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.kosprov.jargon2.api.Jargon2.*;
 
 public class VerifierImpl implements Verifier {
     Jargon2Backend backend = Jargon2BackendDiscovery.INSTANCE.getJargon2Backend();
-    Map<String, Object> options;
+    Map<String, Object> options = Collections.emptyMap();
     Type type = Type.ARGON2i;
     Version version = Version.V13;
     int timeCost = 3;
@@ -75,7 +77,7 @@ public class VerifierImpl implements Verifier {
     @Override
     public VerifierImpl options(Map<String, Object> options) {
         VerifierImpl copy = new VerifierImpl(this);
-        copy.options = options;
+        copy.options = options != null ? new HashMap<>(options) : Collections.<String, Object>emptyMap();
         return copy;
     }
 
@@ -210,7 +212,7 @@ public class VerifierImpl implements Verifier {
         // Careful not to leak any sensitive data
         return "Verifier{" +
                 "backend=" + backend.getClass().getName() +
-                ", options=" + (options != null ? options.size() : "none") +
+                ", options=" + options.size() + " item(s)" +
                 ", type=" + type +
                 ", version=" + version +
                 ", timeCost=" + timeCost +

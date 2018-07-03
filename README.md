@@ -58,9 +58,9 @@ If you're using Maven, add the following dependencies to your pom:
 </dependency>
 ```
 
-You may need to change the version numbers to the most recent release. The second dependency is the [default Jargon2 backend implementation](https://github.com/kosprov/jargon2-backends "Jargon2 Backends repository") that wraps the [Argon2 reference implementation](https://github.com/P-H-C/phc-winner-argon2 "Argon2 reference implementation repository") written in C. It includes x86 binaries compiled for Windows, Linux and macOS, so it should work on most systems. Backend implementations can automatically be discovered using a `java.util.ServiceLoader` so there is no build-time dependency to the backend classes. More on this on the [backends](#backends) section.
+The second dependency is the [default Jargon2 backend implementation](https://github.com/kosprov/jargon2-backends "Jargon2 Backends repository") that wraps the [Argon2 reference implementation](https://github.com/P-H-C/phc-winner-argon2 "Argon2 reference implementation repository") written in C. It includes x86 binaries compiled for Windows, Linux and macOS, so it should work on most systems. Backend implementations can automatically be discovered using a `java.util.ServiceLoader` so there is no build-time dependency to the backend classes. More on this on the [backends](#backends) section.
 
-Keep in mind that `jargon2-api` and `jargon2-native-ri-backend` follow different release cycles and their version number would not necessarily be the same.
+> **Note**: You may need to change the version numbers to the most recent release. Keep in mind that `jargon2-api` and `jargon2-native-ri-backend` follow different release cycles and their version number would not necessarily be the same.
 
 ### Simple example
 
@@ -69,7 +69,7 @@ The simplest possible example would be the following:
 ```java
 import static com.kosprov.jargon2.api.Jargon2.*;
 
-public class Jargon2Example {
+public class Jargon2EncodedHashExample {
     public static void main(String[] args) {
         byte[] password = "this is a password".getBytes();
 
@@ -104,61 +104,6 @@ import static com.kosprov.jargon2.api.Jargon2.*;
 ``` 
 
 `Hasher` and `Verifier` are immutable (copy-on-write), thread-safe objects. Each method call returns a new copy. You usually cascade method calls to build an instance with the static configuration (type, memory cost, time cost etc) and use that prototype instance to pass all values (password, salt, ad etc) needed to calculate a specific hash. The prototype object does not change and can be reused to calculate more hashes. Since it is immutable, it can be safely accessed by multiple threads.
-
-To understand this point further, lets see a simple component that exposes a `hash`/`verify` API to clients:
-
-```java
-import static com.kosprov.jargon2.api.Jargon2.*;
-
-/**
- * Simple thread-safe POJO the encapsulates Argon2 configuration and
- * exposes an API for encoded hashing and verification of passwords.
- */
-public class EncodedPasswordHasher {
-
-    private final Hasher hasher;
-    private final Verifier verifier;
-
-    /**
-     * Create a new instance
-     */
-    public EncodedPasswordHasher() {
-        // build the prototype instances
-        hasher = jargon2Hasher()
-                .type(Type.ARGON2d)
-                .memoryCost(65536)
-                .timeCost(3)
-                .parallelism(4)
-                .saltLength(16)
-                .hashLength(16);
-        verifier = jargon2Verifier();
-    }
-
-    /**
-     * Calculate the encoded hash of the given password
-     *
-     * @param password The password
-     * @return The encoded hash
-     */
-    public String hash(byte[] password) {
-        // password is captured in a copy of the prototype hasher
-        return hasher.password(password).encodedHash();
-    }
-
-    /**
-     * Verify if the given password matches with the encoded hash
-     *
-     * @param encodedHash The encoded hash
-     * @param password The password
-     * @return <tt>true</tt> if password matches with the hash
-     */
-    public boolean verify(String encodedHash, byte[] password) {
-        // encodedHash and password are captured in copies of the prototype verifier
-        return verifier.hash(encodedHash).password(password).verifyEncoded();
-    }
-}
-```
-`EncodedPasswordHasher` instantiates `Hasher` and `Verifier` prototype instances and creates copies of them to calculate or verify the hash. Therefore, `EncodedPasswordHasher` is thread-safe.  
 
 ### Configuration options
 
@@ -202,71 +147,50 @@ From a configuration standpoint, raw hashing differs from encoded hashing in jus
 - The `Hasher` cannot be configured to generate the salt automatically. The salt needs to be generated (and stored) externally and passed along with the password to calculate or verify the hash.
 - The `Verifier` must be configured with the same options as the `Hasher`. Since there is no encoded string to derive options from, the `Verifier` needs to know what was used during hashing.
 
-Lets see how a simple raw hashing component would look like.
+Lets see a simple raw hashing example.
 
 ```java
 import static com.kosprov.jargon2.api.Jargon2.*;
 
-/**
- * Simple thread-safe POJO the encapsulates Argon2 configuration and
- * exposes an API for raw hashing and verification of passwords.
- */
-public class RawPasswordHasher {
+public class Jargon2RawHashExample {
+    public static void main(String[] args) {
+        byte[] salt = "this is a salt".getBytes();
+        byte[] password = "this is a password".getBytes();
 
-    private final Hasher hasher;
-    private final Verifier verifier;
-
-    /**
-     * Create a new instance
-     */
-    public RawPasswordHasher() {
         Type type = Type.ARGON2d;
         int memoryCost = 65536;
         int timeCost = 3;
         int parallelism = 4;
         int hashLength = 16;
 
-        // build the hasher prototype instance
-        hasher = jargon2Hasher()
+        // Configure the hasher
+        Hasher hasher = jargon2Hasher()
                 .type(type)
                 .memoryCost(memoryCost)
                 .timeCost(timeCost)
                 .parallelism(parallelism)
                 .hashLength(hashLength);
-        // build the verifier prototype instance with the same configuration
-        verifier = jargon2Verifier()
+
+        // Configure the verifier with the same settings as the hasher
+        Verifier verifier = jargon2Verifier()
                 .type(type)
                 .memoryCost(memoryCost)
                 .timeCost(timeCost)
                 .parallelism(parallelism);
-    }
 
-    /**
-     * Calculate the raw hash of the given salt and password
-     * 
-     * @param salt The salt
-     * @param password The password
-     * @return The raw hash bytes
-     */
-    public byte[] hash(byte[] salt, byte[] password) {
-        // password and salt are captured in copies of the prototype hasher
-        return hasher.salt(salt).password(password).rawHash();
-    }
+        // Set the salt and password to calculate the raw hash
+        byte[] rawHash = hasher.salt(salt).password(password).rawHash();
 
-    /**
-     * Verify if the given salt and password matches with the raw hash
-     *
-     * @param rawHash The raw hash
-     * @param salt The salt
-     * @param password The password
-     * @return <tt>true</tt> if salt and password matches with the hash
-     */
-    public boolean verify(byte[] rawHash, byte[] salt, byte[] password) {
-        // rawHash, salt and password are captured in copies of the prototype verifier
-        return verifier.hash(rawHash).salt(salt).password(password).verifyRaw();
+        System.out.printf("Hash: %s%n", Arrays.toString(rawHash));
+
+        // Set the raw hash, salt and password and verify
+        boolean matches = verifier.hash(rawHash).salt(salt).password(password).verifyRaw();
+
+        System.out.printf("Matches: %s%n", matches);
     }
 }
 ```
+
 ### The ByteArray API
 
 Passwords and secrets are typically available as `char[]`. Converting them to `byte[]` (as this is what's needed by low-level libraries) creates a copy of the sensitive value. This copy must be safely zeroed-out after use. 
@@ -344,77 +268,76 @@ try (ByteArray passwordByteArray = toByteArray(password).normalize()) {
 
 ### A more elaborate example
 
-To showcase how Jargon2 can be used effectively, a more advanced integration scenario will be presented. We will assume a JavaEE environment where we will port the `EncodedPasswordHasher` and `RawPasswordHasher` implemented above. It will support both encoded and raw hashing and will also use a secret for keyed hashing.
+To showcase how Jargon2 can be used effectively, we will assume a JavaEE environment (a CDI container) and we will build an application-scoped (singleton) component which will expose a hash/verify API. It will internally manage and use an HMAC key, support different numbers of lanes and threads and expose an API to test whether a hash needs to be upgraded.
 
 ```java
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.*;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import static com.kosprov.jargon2.api.Jargon2.*;
 
 /**
- * EJB that exposes encoded and raw password hashing and verification
+ * CDI bean that exposes encoded and raw password hashing and verification
  */
-@Singleton
-@Startup
-@ConcurrencyManagement(ConcurrencyManagementType.BEAN)
-@TransactionManagement(TransactionManagementType.BEAN)
-public class KeyedPasswordHasher {
+@ApplicationScoped  // The component is thread-safe, so we can have a single object
+public class PasswordHasher {
 
-    private ByteArray secret;
-    private Hasher hasher;
-    private Verifier verifier;
+    private Hasher hasher;     // The hasher instance
+    private Verifier verifier; // The verifier instance
 
     @Inject
-    private KeyStore keyStore; // Assume there is another component that loads the HMAC key
+    private Configuration config; // Assume another CDI bean that can load configuration parameters
+
+    @Inject
+    private KeyStore keyStore;    // Assume another CDI bean that can load the HMAC key
+
+    private ByteArray secret;     // A ByteArray that will wrap the HMAC key loaded from keyStore
 
     @PostConstruct
     private void init() {
-        // Load key and wrap it to a ByteArray. Also, mark to clear the key byte[] as well
+
+        // Load the HMAC key and wrap it to a ByteArray.
+        // Also, mark to clear the source byte[] when we clear this instance (see destroy() below)
         secret = toByteArray(keyStore.loadKey()).clearSource();
 
-        Type type = Type.ARGON2d;
-        Version version = Version.V13;
-        int memoryCost = 16384;
-        int timeCost = 3;
-        int lanes = 4;   // use 4 lanes ...
-        int threads = 1; // ... but only 1 thread
-        int saltLength = 16;
-        int hashLength = 16;
+        // Load configuration parameters
+        Type type = Type.valueOf(config.getString("password.hasher.argon2.type"));
+        int memoryCost = config.getInteger("password.hasher.argon2.memoryCost");
+        int timeCost = config.getInteger("password.hasher.argon2.timeCost");
+        int lanes = config.getInteger("password.hasher.argon2.parallelism");
+        int saltLength = config.getInteger("password.hasher.saltLength");
+        int hashLength = config.getInteger("password.hasher.hashLength");
+
+        // Use N-1 cores, regardless of the number of lanes
+        int threads = Runtime.getRuntime().availableProcessors() - 1;
 
         hasher = jargon2Hasher()
                 // Set the HMAC key
                 .secret(secret)
-                // Configure the hasher
+                // Configure hasher properties
                 .type(type)
-                .version(version)
                 .memoryCost(memoryCost)
                 .timeCost(timeCost)
-                .parallelism(lanes, threads)
+                .parallelism(lanes, threads) // set lanes and threads independently
                 .saltLength(saltLength)
                 .hashLength(hashLength)
                 ;
 
-        // Configure the verifier
         verifier = jargon2Verifier()
                 // Set the HMAC key
                 .secret(secret)
-                // Configure the verifier (only effective on raw hash verification.
-                // On encoded hash verification, all these values except threads are
-                // derived from the encoded hash string)
-                .type(type)
-                .version(Version.V13)
-                .memoryCost(memoryCost)
-                .timeCost(timeCost)
-                .parallelism(lanes, threads) // threads applies to encoded hashing, as well
+                // Configure the threads used by the verifier, regardless of the 
+                // p property found encoded in the hash
+                .threads(threads)
                 ;
     }
 
     @PreDestroy
     private void destroy() {
-        secret.clear(); // Zero out memory locations of HMAC key during undeployment
+        // Zero out memory locations of HMAC key during undeployment
+        secret.clear();
     }
 
     /**
@@ -448,38 +371,34 @@ public class KeyedPasswordHasher {
     }
 
     /**
-     * Calculate an Argon2 raw hash. The password is cleared before this method returns.
+     * Tests whether properties found in the encoded hash (type, version, memory cost, time cost, parallelism,
+     * salt length and hash length) are up-to-date with respect to the current configuration.
      *
-     * @param salt A unique random byte array
-     * @param password The password to be hashed
-     * @return The raw Argon2 hash
+     * @param encodedHash The encoded hash to test
+     * @return <tt>true</tt> if properties found in encoded hash match with the current configuration
      */
-    public byte[] rawHash(byte[] salt, char[] password) {
-        try (ByteArray passwordByteArray = toByteArray(password).clearSource()) {
-            return hasher.salt(salt).password(passwordByteArray).rawHash();
-        } catch (Exception e) {
-            throw new RuntimeException("Error during password hashing", e);
-        }
-    }
-
-    /**
-     * Verify that the password matches with the raw hash and the salt. The password is cleared
-     * before this method returns.
-     *
-     * @param rawHash The raw hash
-     * @param salt The salt used during hash calculation
-     * @param password The password to be verified
-     * @return <tt>true</tt> if the password matches with the raw hash and the salt
-     */
-    public boolean verifyRaw(byte[] rawHash, byte[] salt, char[] password) {
-        try (ByteArray passwordByteArray = toByteArray(password).clearSource()) {
-            return verifier.hash(rawHash).salt(salt).password(passwordByteArray).verifyRaw();
-        } catch (Exception e) {
-            throw new RuntimeException("Error during password verification", e);
-        }
+    public boolean isUpdated(String encodedHash) {
+        return hasher.propertiesMatch(encodedHash);
     }
 }
 ```
+
+The rationale in setting memory lanes and processing threads independently is when you run your application on heterogeneous hardware and the number of CPU cores available on any machine varies (e.g in a cloud environment). In such a case, you could select a sensible value for memory lanes based on your best hardware, but configure the number of threads not to exceed the number of cores of the CPU on the _current_ hardware. Depending on the configuration, you could see a small but non-negligible speedup. Do your own benchmarks to decide if it's worth it.
+
+Method `isUpdated(String)` tests whether properties found in the encoded hash match with the current configuration of the hasher by delegating to `hasher.propertiesMatch(String)`. This API can help when you want to change Argon2 properties (e.g. increase memory cost to make hashes more secure) and automatically migrate current hashes, without require users to reset their passwords. For example, a login component could use `isUpdated(String)` like:
+
+```java
+// login started
+// capture password from the user and load encodedHash from the database
+boolean passwordValid = passwordHasher.verifyEncoded(encodedHash, password);
+if (passwordValid && !passwordHasher.isUpdated(encodedHash)) { 
+    String newHash = passwordHasher.encodedHash(password);
+    // store newHash
+}
+// continue login
+```
+
+That way, hashes will be migrated to the new configuration gradually, as users login to the application. The cost of checking the encoded hash on every successful login is extremely low, so no performance penalty is induced.
 
 ## Low-level API
 

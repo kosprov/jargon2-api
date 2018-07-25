@@ -279,7 +279,7 @@ import javax.inject.Inject;
 import static com.kosprov.jargon2.api.Jargon2.*;
 
 /**
- * CDI bean that exposes encoded and raw password hashing and verification
+ * CDI bean that exposes encoded password hashing and verification
  */
 @ApplicationScoped  // The component is thread-safe, so we can have a single object
 public class PasswordHasher {
@@ -385,15 +385,20 @@ public class PasswordHasher {
 
 The rationale in setting memory lanes and processing threads independently is when you run your application on heterogeneous hardware and the number of CPU cores available on any machine varies (e.g in a cloud environment). In such a case, you could select a sensible value for memory lanes based on your best hardware, but configure the number of threads not to exceed the number of cores of the CPU on the _current_ hardware. Depending on the configuration, you could see a small but non-negligible speedup. Do your own benchmarks to decide if it's worth it.
 
-Method `isUpdated(String)` tests whether properties found in the encoded hash match with the current configuration of the hasher by delegating to `hasher.propertiesMatch(String)`. This API can help when you want to change Argon2 properties (e.g. increase memory cost to make hashes more secure) and automatically migrate current hashes, without require users to reset their passwords. For example, a login component could use `isUpdated(String)` like:
+Method `isUpdated(String)` tests whether properties found in the encoded hash match with the current configuration of the hasher by delegating to `hasher.propertiesMatch(String)`. This API can help when you want to change Argon2 properties (e.g. increase memory cost to make hashes more secure) and automatically migrate current hashes, without requiring users to reset their passwords. For example, a login component could use `isUpdated(String)` like:
 
 ```java
 // login started
 // capture password from the user and load encodedHash from the database
+// verify encodedHash matches with password using passwordHasher component from above
 boolean passwordValid = passwordHasher.verifyEncoded(encodedHash, password);
-if (passwordValid && !passwordHasher.isUpdated(encodedHash)) { 
+if (passwordValid && !passwordHasher.isUpdated(encodedHash)) {
+    // i.  The password matched. That means we have the original plaintext password
+    // ii. The encoded hash in the database has different properties. That means Argon2 configuration
+    //     must have changed since the user created her password. We must calculate a new hash.
     String newHash = passwordHasher.encodedHash(password);
-    // store newHash
+    
+    // store newHash in the database
 }
 // continue login
 ```

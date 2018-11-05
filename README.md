@@ -407,7 +407,7 @@ That way, hashes will be migrated to the new configuration gradually, as users l
 
 ## Low-level API
 
-During development, you may not be confident you have configured `Hasher` or `Verifier` instances properly, and you need a way cross-check the calculated hashes with the use of another API.
+During development, you may not be confident you have configured `Hasher` or `Verifier` instances properly, and you need a way to cross-check the calculated hashes with the use of another API.
 
 Jargon2 provides a low-level API, very close to the backend SPI. You can use it as follows:
 
@@ -485,4 +485,4 @@ If you're uncertain on which backend has been loaded, just call `toString()` on 
 
 Jargon2 default backend is a wrapper of the [Argon2 reference implementation](https://github.com/P-H-C/phc-winner-argon2 "Argon2 reference implementation repository") written in C. It packages binaries that have been compiled without any CPU-specific optimizations. It does all low-level operations with standard C code where some operations can be bulked in SIMD instructions. Expect a significant performance boost just by recompiling the C code for your particular CPU type. The gains are bigger if you're hashing with large memory and time costs. The [Jargon 2 backends repository](https://github.com/kosprov/jargon2-backends "Jargon2 Backends repository") has information on how to do that.
 
-You can, also, checkout the [Jargon 2 examples respository](https://github.com/kosprov/jargon2-examples "Jargon 2 examples respository"). It contains simple stress tests and long-running stability tests and you can run the experiments on your server to find out what works best on your hardware. 
+You can, also, checkout the [Jargon 2 examples repository](https://github.com/kosprov/jargon2-examples "Jargon 2 examples respository"). It contains simple stress tests and long-running stability tests and you can run the experiments on your server to find out what works best on your hardware. 
